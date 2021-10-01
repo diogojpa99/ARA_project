@@ -33,8 +33,6 @@ int main()
 
     while( fscanf(fp, "%s %s %c\n", tail, head, &type) != EOF ){
         NodesHead = createNode(NodesHead, tail, head, type);
-
-
     }
 
     fclose(fp);
@@ -56,8 +54,7 @@ Nodes *createNode(Nodes *listHead, char *tail, char *head, char type){
         printf("Memory is full. Couldn't register request.\n");
 		return listHead; //what do we retunr ??
     }
-
-        
+    
     newNode->id=tail;
     newNode->next=NULL;
     newlink->tail= tail;
@@ -65,6 +62,18 @@ Nodes *createNode(Nodes *listHead, char *tail, char *head, char type){
     newlink->tpe= type;
     newlink->cost=1; //Ver se será preciso definir isto
     
+    return listHead;
+}
+
+Adj *createAdj(Adj *listHead, char *tail, char *head, char type){ //Pensar sobre qual é que vai ser a listHead das Adj
+
+    Adj *newAdj;
+
+    /** Creation of a New Node **/
+    if(newNode = (Nodes*) malloc(sizeof(Nodes)) == NULL){
+        printf("Memory is full. Couldn't register request.\n");
+		return listHead;
+    }
     return listHead;
 }
 
