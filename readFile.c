@@ -5,24 +5,35 @@
 
 // Implementar o grafo pelo método de lista de adjacências
 
-typedef struct _Nodes{
-    char id;
-    Adj *nextAdj;
-    struct _Nodes *next;
-} Nodes;
-
 typedef struct _Adj{
-    char id, type; //What's the commercial relation between me and my "list head"
+    char *id, *neighbor, type; //What's the commercial relation between me and my "list head"
     int cost;   //what's the cost from the link between me and my "list head"
     struct _Adj *next;
 } Adj;
+
+typedef struct _Nodes{
+    char *id;
+    Adj *adjHead;
+    struct _Nodes *next;
+} Nodes;
+
+Nodes *createNode(Nodes *listHead, char *tail, char *head, char type);
+
+Adj *createAdj(Adj *listHead, char *tail, char *head, char type);
+
+Adj *insertAdj(Adj *listHead, Adj *newAdj);
+
+Nodes *insertNode(Nodes *listHead, Nodes *newNode);
+
+Nodes *searchNodesList(Nodes *listHead, char *id);
+
+void Print_List_of_Adjacencies(Nodes *listHead);
 
 int main()
 {
     FILE *fp;
     char tail[5], head[5], type;
     Nodes *NodesHead = NULL, *newNode;
-    Adj *newAdj;
 
     fp = fopen("grafo1.txt","r");
 
@@ -35,44 +46,77 @@ int main()
         NodesHead = createNode(NodesHead, tail, head, type);
     }
 
+    Print_List_of_Adjacencies(NodesHead);
+
     fclose(fp);
     return 0;
 }
 
-
+/** createNode: Creates a new node in the Nodes List **/
 Nodes *createNode(Nodes *listHead, char *tail, char *head, char type){ 
 
-    Nodes *newNode, *auxH, *auxT;
+    Nodes *newNode=NULL;
+    Adj *newAdj=NULL;
 
-    /** Creation of a New Node **/
-    if(newNode = (Nodes*) malloc(sizeof(Nodes)) == NULL){
-        printf("Memory is full. Couldn't register request.\n");
-		return listHead;
+    if (searchNodesList( listHead, tail) == NULL){ //Deve ser tail ou head ? Perguntar ao prof
+        if((newNode = (Nodes*) malloc(sizeof(Nodes))) == NULL){   /** Creation of a New Node **/
+            printf("Memory is full. Couldn't register request.\n");
+		    return listHead;
+        }
+        newNode->id=tail;
+        newNode->next=NULL;
+        newNode->adjHead=NULL;
+    } 
+    else{
+        newNode = searchNodesList(listHead, tail);        
     }
-    
-    if(newlink = (Edges*) malloc(sizeof(Edges)) == NULL){
-        printf("Memory is full. Couldn't register request.\n");
-		return listHead; //what do we retunr ??
-    }
-    
-    newNode->id=tail;
-    newNode->next=NULL;
-    newlink->tail= tail;
-    newlink->head= head;
-    newlink->tpe= type;
-    newlink->cost=1; //Ver se será preciso definir isto
+    newAdj= createAdj(newNode->adjHead, tail, head, type);
+    newNode->adjHead=insertAdj(newNode->adjHead, newAdj);
     
     return listHead;
 }
 
+/** Creates a new adjacent nodes referent to the Node in the Nodes List **/
 Adj *createAdj(Adj *listHead, char *tail, char *head, char type){ //Pensar sobre qual é que vai ser a listHead das Adj
 
     Adj *newAdj;
 
     /** Creation of a New Node **/
-    if(newNode = (Nodes*) malloc(sizeof(Nodes)) == NULL){
+    if((newAdj = (Adj*) malloc(sizeof(Adj))) == NULL){
         printf("Memory is full. Couldn't register request.\n");
 		return listHead;
+    }
+
+    newAdj->neighbor=tail;
+    newAdj->id=head;
+    if(strcmp(&type,"2")){
+        strcpy(&newAdj->type,"2");
+    } 
+    else if(strcmp(&type,"1")){
+        strcpy(&newAdj->type,"3");
+    } 
+    else if(strcmp(&type,"3")){
+        strcpy(&newAdj->type,"1");
+    }
+
+    return newAdj;
+}
+
+/** Insert the new Adj int the end of the respective Adj List **/
+Adj *insertAdj(Adj *listHead, Adj *newAdj){ 
+
+    Adj *auxH, *auxT;
+
+    if(listHead == NULL){
+        listHead=newAdj;
+    }else{
+        auxH=listHead;
+        auxT=listHead->next;
+        while(auxT !=NULL){
+            auxH=auxT;
+            auxT=auxT->next;
+        }
+        auxT->next=newAdj;
     }
     return listHead;
 }
@@ -82,7 +126,7 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode){ //Insert the new Node in the
     Nodes *auxH, *auxT;
 
     /** Inserting the new node in the end of the nodes list and returning the list head**/
-    if(listHead == NULL){
+    if(listHead==NULL){
         listHead=newNode;
     }else{
         auxH=listHead;
@@ -91,7 +135,7 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode){ //Insert the new Node in the
             auxH=auxT;
             auxT=auxT->next;
         }
-        auxT->next=newNode;
+    auxT->next=newNode;
     }
     return listHead;
 }
@@ -101,22 +145,52 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode){ //Insert the new Node in the
 * If there is a match the function retunrs 1, theis means that the Node is already in the Nodes List, so we don´t create the        * 
 * same Nome two times. If there is no match, the fuction returns zero and we can create the new node and add him to the Nodes List. *
 *   */
-int searchNodesList(Nodes *listHead, int id){ 
+Nodes *searchNodesList(Nodes *listHead, char *id){ 
 
     Nodes *auxH, *auxT;
 
-    if(listHead == NULL){
-        return 0;
-    }else{
-        auxH=listHead;
-        auxT=listHead->next;
+    auxH=listHead;
+    auxT=listHead->next;
+
+    if(auxH == NULL){
+        return auxH;
+    }else{     
         while(auxT !=NULL){
             auxH=auxT;
             auxT=auxT->next;
-            if(auxH->id==id){
-                return 1;
+            if( strcmp(auxH->id,id) == 0 ){
+                return auxH;
             }
         }
     }
-    return 0;
+    return auxH;
+}
+
+void Print_List_of_Adjacencies(Nodes *listHead){
+    
+    Nodes *nodes_auxH, *nodes_auxT;
+    Adj *adj_auxH, *adj_auxT;
+
+    if(listHead==NULL){
+        return;
+    }else{
+        nodes_auxH=listHead;
+        nodes_auxT=listHead->next;
+        while(nodes_auxT != NULL){
+            printf("[%s]->", nodes_auxH->id);
+            adj_auxH=nodes_auxH->adjHead;
+            adj_auxT=nodes_auxH->adjHead->next;
+            while( adj_auxT != NULL){
+                printf("[id:%s|type:%c|neighbor:%s]->", adj_auxH->id, adj_auxH->type, adj_auxH->neighbor);
+                adj_auxH=adj_auxT;
+                adj_auxT=adj_auxT->next;
+            }
+            printf("NULL\n!");
+            nodes_auxH=nodes_auxT;
+            nodes_auxT=nodes_auxT->next;
+        }
+        printf("NULL\n");
+    }
+
+    return;
 }
