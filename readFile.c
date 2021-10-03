@@ -6,8 +6,8 @@
 // Implementar o grafo pelo método de lista de adjacências
 
 typedef struct _Adj{
-    char *id, *neighbor, type; //What's the commercial relation between me and my "list head"
-    int cost;   //what's the cost from the link between me and my "list head"
+    char *id, *neighbor; //What's the commercial relation between me and my "list head"
+    int type, cost;   //what's the cost from the link between me and my "list head"
     struct _Adj *next;
 } Adj;
 
@@ -17,9 +17,9 @@ typedef struct _Nodes{
     struct _Nodes *next;
 } Nodes;
 
-Nodes *createNode(Nodes *listHead, char *tail, char *head, char type);
+Nodes *createNode(Nodes *listHead, char *tail, char *head, int type);
 
-Adj *createAdj(Adj *listHead, char *tail, char *head, char type);
+Adj *createAdj(Adj *listHead, char *tail, char *head, int type);
 
 Adj *insertAdj(Adj *listHead, Adj *newAdj);
 
@@ -29,10 +29,13 @@ Nodes *searchNodesList(Nodes *listHead, char *id);
 
 void Print_List_of_Adjacencies(Nodes *listHead);
 
+void Print_List(Nodes *listHead);
+
 int main()
 {
     FILE *fp;
-    char tail[5], head[5], type;
+    char tail[12], head[12];
+    int type;
     Nodes *NodesHead = NULL, *newNode;
 
     fp = fopen("grafo1.txt","r");
@@ -42,18 +45,20 @@ int main()
         return(-1);
     }
 
-    while( fscanf(fp, "%s %s %c\n", tail, head, &type) != EOF ){
+    while( fscanf(fp, "%s %s %d\n", tail, head, &type) != EOF ){
+        //printf("%s %s %d\n", tail, head, type);
         NodesHead = createNode(NodesHead, tail, head, type);
     }
 
-    Print_List_of_Adjacencies(NodesHead);
+    Print_List(NodesHead);
+    //xPrint_List_of_Adjacencies(NodesHead);
 
     fclose(fp);
     return 0;
 }
 
 /** createNode: Creates a new node in the Nodes List **/
-Nodes *createNode(Nodes *listHead, char *tail, char *head, char type){ 
+Nodes *createNode(Nodes *listHead, char *tail, char *head, int type){ 
 
     Nodes *newNode=NULL;
     Adj *newAdj=NULL;
@@ -72,12 +77,15 @@ Nodes *createNode(Nodes *listHead, char *tail, char *head, char type){
     }
     newAdj= createAdj(newNode->adjHead, tail, head, type);
     newNode->adjHead=insertAdj(newNode->adjHead, newAdj);
-    
+    listHead=insertNode(listHead, newNode);
+
+    printf("New node: id=%s |-> Adj: id=%s| neighbor=%s| type=%d\n",newNode->id,newAdj->id, newAdj->neighbor, newAdj->type );
+
     return listHead;
 }
 
 /** Creates a new adjacent nodes referent to the Node in the Nodes List **/
-Adj *createAdj(Adj *listHead, char *tail, char *head, char type){ //Pensar sobre qual é que vai ser a listHead das Adj
+Adj *createAdj(Adj *listHead, char *tail, char *head, int type){ //Pensar sobre qual é que vai ser a listHead das Adj
 
     Adj *newAdj;
 
@@ -89,14 +97,14 @@ Adj *createAdj(Adj *listHead, char *tail, char *head, char type){ //Pensar sobre
 
     newAdj->neighbor=tail;
     newAdj->id=head;
-    if(strcmp(&type,"2")){
-        strcpy(&newAdj->type,"2");
+    if( type==2){
+        newAdj->type=2;
     } 
-    else if(strcmp(&type,"1")){
-        strcpy(&newAdj->type,"3");
+    else if( type==1){
+        newAdj->type=3;
     } 
-    else if(strcmp(&type,"3")){
-        strcpy(&newAdj->type,"1");
+    else if( type==3){
+        newAdj->type=1;
     }
 
     return newAdj;
@@ -109,6 +117,7 @@ Adj *insertAdj(Adj *listHead, Adj *newAdj){
 
     if(listHead == NULL){
         listHead=newAdj;
+        listHead->next=NULL;
     }else{
         auxH=listHead;
         auxT=listHead->next;
@@ -116,7 +125,8 @@ Adj *insertAdj(Adj *listHead, Adj *newAdj){
             auxH=auxT;
             auxT=auxT->next;
         }
-        auxT->next=newAdj;
+        auxH->next=newAdj;
+        newAdj->next=NULL;
     }
     return listHead;
 }
@@ -128,15 +138,20 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode){ //Insert the new Node in the
     /** Inserting the new node in the end of the nodes list and returning the list head**/
     if(listHead==NULL){
         listHead=newNode;
+        listHead->next = NULL;
     }else{
         auxH=listHead;
         auxT=listHead->next;
-        while(auxT !=NULL){
+        while(auxT != NULL){
             auxH=auxT;
             auxT=auxT->next;
+            if(strcmp(auxH->id,"17228")==0)
+                printf("auxT=%s ",auxT->id);
         }
-    auxT->next=newNode;
+        auxH->next=newNode;
+        newNode->next=NULL;
     }
+    Print_List(listHead);
     return listHead;
 }
 
@@ -150,20 +165,23 @@ Nodes *searchNodesList(Nodes *listHead, char *id){
     Nodes *auxH, *auxT;
 
     auxH=listHead;
-    auxT=listHead->next;
 
     if(auxH == NULL){
-        return auxH;
+        return NULL;
     }else{     
+        auxT=listHead->next;
         while(auxT !=NULL){
-            auxH=auxT;
-            auxT=auxT->next;
             if( strcmp(auxH->id,id) == 0 ){
                 return auxH;
             }
+            else{
+                return NULL;
+            }
+            auxH=auxT;
+            auxT=auxT->next;
         }
     }
-    return auxH;
+    return NULL;
 }
 
 void Print_List_of_Adjacencies(Nodes *listHead){
@@ -181,16 +199,36 @@ void Print_List_of_Adjacencies(Nodes *listHead){
             adj_auxH=nodes_auxH->adjHead;
             adj_auxT=nodes_auxH->adjHead->next;
             while( adj_auxT != NULL){
-                printf("[id:%s|type:%c|neighbor:%s]->", adj_auxH->id, adj_auxH->type, adj_auxH->neighbor);
+                printf("[id:%s|type:%d|neighbor:%s]->", adj_auxH->id, adj_auxH->type, adj_auxH->neighbor);
                 adj_auxH=adj_auxT;
                 adj_auxT=adj_auxT->next;
             }
-            printf("NULL\n!");
+            printf("NULL\n");
             nodes_auxH=nodes_auxT;
             nodes_auxT=nodes_auxT->next;
         }
         printf("NULL\n");
     }
+
+    return;
+}
+
+void Print_List(Nodes *listHead){
+    
+    Nodes *auxH, *auxT;
+    
+    if(listHead==NULL){
+        return;
+    }else{
+        auxH=listHead;
+        auxT=listHead->next;
+        while( auxT != NULL){
+            printf("id:%s\n",auxH->id);
+            auxH=auxT;
+            auxT=auxT->next;
+        }
+    }
+        printf("NULL\n");
 
     return;
 }
