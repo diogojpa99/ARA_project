@@ -36,7 +36,7 @@ int main()
     FILE *fp;
     char tail[12], head[12];
     int type;
-    Nodes *NodesHead = NULL, *newNode;
+    Nodes *NodesHead = NULL, *newNode=NULL;
 
     fp = fopen("grafo1.txt","r");
 
@@ -46,7 +46,7 @@ int main()
     }
 
     while( fscanf(fp, "%s %s %d\n", tail, head, &type) != EOF ){
-        //printf("%s %s %d\n", tail, head, type);
+        printf("%s %s %d\n", tail, head, type);
         NodesHead = createNode(NodesHead, tail, head, type);
     }
 
@@ -67,19 +67,22 @@ Nodes *createNode(Nodes *listHead, char *tail, char *head, int type){
         if((newNode = (Nodes*) malloc(sizeof(Nodes))) == NULL){   /** Creation of a New Node **/
             printf("Memory is full. Couldn't register request.\n");
 		    return listHead;
-        }
+        } 
         newNode->id=tail;
         newNode->next=NULL;
         newNode->adjHead=NULL;
+        printf("id=%s\n", newNode->id);      
     } 
     else{
-        newNode = searchNodesList(listHead, tail);        
+        newNode = searchNodesList(listHead, tail);
+        printf("id=%s\n", newNode->id);         
     }
+
     newAdj= createAdj(newNode->adjHead, tail, head, type);
     newNode->adjHead=insertAdj(newNode->adjHead, newAdj);
     listHead=insertNode(listHead, newNode);
 
-    printf("New node: id=%s |-> Adj: id=%s| neighbor=%s| type=%d\n",newNode->id,newAdj->id, newAdj->neighbor, newAdj->type );
+    //printf("New node: id=%s |-> Adj: id=%s| neighbor=%s| type=%d\n",newNode->id,newAdj->id, newAdj->neighbor, newAdj->type );
 
     return listHead;
 }
@@ -117,7 +120,6 @@ Adj *insertAdj(Adj *listHead, Adj *newAdj){
 
     if(listHead == NULL){
         listHead=newAdj;
-        listHead->next=NULL;
     }else{
         auxH=listHead;
         auxT=listHead->next;
@@ -138,20 +140,20 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode){ //Insert the new Node in the
     /** Inserting the new node in the end of the nodes list and returning the list head**/
     if(listHead==NULL){
         listHead=newNode;
-        listHead->next = NULL;
     }else{
         auxH=listHead;
         auxT=listHead->next;
         while(auxT != NULL){
             auxH=auxT;
             auxT=auxT->next;
+
             if(strcmp(auxH->id,"17228")==0)
                 printf("auxT=%s ",auxT->id);
         }
         auxH->next=newNode;
         newNode->next=NULL;
     }
-    Print_List(listHead);
+    //Print_List(listHead);
     return listHead;
 }
 
@@ -172,6 +174,7 @@ Nodes *searchNodesList(Nodes *listHead, char *id){
         auxT=listHead->next;
         while(auxT !=NULL){
             if( strcmp(auxH->id,id) == 0 ){
+                printf("%s==%s\n", auxH->id, id);
                 return auxH;
             }
             else{
