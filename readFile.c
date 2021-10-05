@@ -2,16 +2,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
+#define MAX_ID 65535
 // Implementar o grafo pelo método de lista de adjacências
 
 typedef struct _Adj{
     int id, neighbor, type, cost; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
+    char message[128]; //new
     struct _Adj *next;
 } Adj;
 
 typedef struct _Nodes{
     int id;
+    char message[128]; //new
     Adj *adjHead;
     struct _Nodes *next;
 } Nodes;
@@ -33,7 +37,7 @@ void Print_List(Nodes *listHead);
 int main()
 {
     FILE *fp;
-    int tail, head, type;
+    int tail, head, type, node_id, flag=0;
     Nodes *NodesHead = NULL, *newNode=NULL;
 
     fp = fopen("grafo1.txt","r");
@@ -46,7 +50,24 @@ int main()
     while( fscanf(fp, "%d %d %d\n", &tail, &head, &type) != EOF ){
         NodesHead = createNode(NodesHead, tail, head, type);
     }
-
+    
+    
+    printf("Insert the id of the node you want to wake: "); fflush(stdout);//prompt
+    
+    while(flag==0){ //Problemas: Loop em "abc" e ignora o "a" em "123a"
+		if( (scanf("%d", &node_id) != 1) && (node_id<=1 || node_id>=MAX_ID)){
+			printf("You have to insert an integer from 1 to %d\n", MAX_ID);
+			printf("Insert the id of the node you want to wake: "); fflush(stdout);//promp
+		}else{
+			flag=1;
+		}
+	}
+	/*while((scanf("%d", &node_id) == 1) && (node_id>=1 && node_id<=MAX_ID)){
+			printf("You have to insert an integer from 1 to %d\n", MAX_ID);
+			printf("Insert the id of the node you want to wake: "); fflush(stdout);//promp
+	}*/
+	
+	printf("id:%d\n", node_id); fflush(stdout);//prompt
     //Print_List(NodesHead);
     Print_List_of_Adjacencies(NodesHead);
 
