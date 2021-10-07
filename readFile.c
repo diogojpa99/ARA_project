@@ -20,6 +20,15 @@ typedef struct _Nodes{
     struct _Nodes *next;
 } Nodes;
 
+//Estrutura para o calendário - lista simplesmente ligada
+typedef struct _Event{
+    float time;
+    int in_node;
+    int out_node; 
+
+} Event;
+
+
 Nodes *createNode(Nodes *listHead, int tail, int head, int type);
 
 Adj *createAdj(Adj *listHead, int tail, int head, int type);
@@ -33,6 +42,9 @@ Nodes *searchNodesList(Nodes *listHead, int id);
 void Print_List_of_Adjacencies(Nodes *listHead);
 
 void Print_List(Nodes *listHead);
+
+
+void createEventNode(Event *new_node);
 
 int main()
 {
@@ -226,3 +238,11 @@ void Print_List(Nodes *listHead){
 
     return;
 } 
+
+
+
+//Funcao que cria um novo evento para poder ser inserido no calendario
+void createEventNode(Event *new_node)
+{
+    
+}
