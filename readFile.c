@@ -1,35 +1,37 @@
 #include <stdio.h>
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #define MAX_ID 65535
+
 // Implementar o grafo pelo método de lista de adjacências
 
 typedef struct _Adj{
-    int id, neighbor, type, cost; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
-    char message[128]; //new
+    int id, neighbor, type; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
+    char message[6]; 
     struct _Adj *next;
 } Adj;
 
 typedef struct _Nodes{
     int id;
-    char message[128]; //new
+    char message[6]; 
     Adj *adjHead;
     struct _Nodes *next;
 } Nodes;
 
 //Estrutura para o calendário - lista simplesmente ligada
 typedef struct _Event{
-    float time;
-    int in_node;
-    int out_node; 
-
+    int time, in_node, out_node, type; 
+    struct _Event *next;
 } Event;
 
 
-Nodes *createNode(Nodes *listHead, int tail, int head, int type);
+Nodes *createGraph(Nodes *listHead, int tail, int head, int type);
+
+Nodes *createNode(Nodes *listHead, int tail);
 
 Adj *createAdj(Adj *listHead, int tail, int head, int type);
 
@@ -41,18 +43,27 @@ Nodes *searchNodesList(Nodes *listHead, int id);
 
 void Print_List_of_Adjacencies(Nodes *listHead);
 
-void Print_List(Nodes *listHead);
+int walk_trough_nodesList(Nodes *listHead);
 
+Nodes *wakeNode(Nodes *listHead, int awake_id);
 
-void createEventNode(Event *new_node);
+Event *searchNeighbors(Event *eventHead, Nodes *node);
+
+Event *createEvent(Event *listHead, Nodes *node, Adj *adj);
+
+Event *insertEvent(Event *listHead, Event *newEvent);
+
+void printEvents(Event *listHead);
 
 int main()
 {
     FILE *fp;
-    int tail, head, type, node_id, flag=0;
-    Nodes *NodesHead = NULL, *newNode=NULL;
+    int tail, head, type, node_id, flag=0, n_nodes, awaken_node;
+    Nodes *NodesHead = NULL, *newNode=NULL, *node=NULL;
+    Event *eventHead=NULL;
 
     fp = fopen("grafo1.txt","r");
+    srand(time(0));
 
     if(fp==NULL){
         perror("Error opening the text file");
@@ -60,12 +71,26 @@ int main()
     }
 
     while( fscanf(fp, "%d %d %d\n", &tail, &head, &type) != EOF ){
-        NodesHead = createNode(NodesHead, tail, head, type);
+        NodesHead = createGraph(NodesHead, tail, head, type);
     }
+    Print_List_of_Adjacencies(NodesHead);
     
-    
-    printf("Insert the id of the node you want to wake: "); fflush(stdout);//prompt
-    
+    /******************************************** Simulation ***********************************************/
+
+    printf("The simulation has started!\n");
+    n_nodes=walk_trough_nodesList(NodesHead);
+    awaken_node=rand()%n_nodes;
+    node = wakeNode(NodesHead,awaken_node); //Awake random Node in the Nodes List
+    if(node==NULL)
+        printf("UPS!\n");
+    else
+        printf("Awaken Node id(rand):%d(%d)\n",node->id,awaken_node);
+
+    eventHead=searchNeighbors(eventHead, node);
+    printEvents(eventHead);
+
+    /**************************************** Interactive Mode ********************************************/
+    /**printf("Insert the id of the node you want to wake: "); fflush(stdout);//prompt
     while(flag==0){ //Problemas: Loop em "abc" e ignora o "a" em "123a"
 		if( (scanf("%d", &node_id) != 1) && (node_id<=1 || node_id>=MAX_ID)){
 			printf("You have to insert an integer from 1 to %d\n", MAX_ID);
@@ -74,33 +99,21 @@ int main()
 			flag=1;
 		}
 	}
-	/*while((scanf("%d", &node_id) == 1) && (node_id>=1 && node_id<=MAX_ID)){
-			printf("You have to insert an integer from 1 to %d\n", MAX_ID);
-			printf("Insert the id of the node you want to wake: "); fflush(stdout);//promp
-	}*/
-	
 	printf("id:%d\n", node_id); fflush(stdout);//prompt
-    //Print_List(NodesHead);
-    Print_List_of_Adjacencies(NodesHead);
+    **********************************************************************************************************/
 
     fclose(fp);
     return 0;
 }
 
 /** createNode: Creates a new node in the Nodes List **/
-Nodes *createNode(Nodes *listHead, int tail, int head, int type){ 
+Nodes *createGraph(Nodes *listHead, int tail, int head, int type){ 
 
     Nodes *newNode=NULL;
     Adj *newAdj=NULL;
     
     if (searchNodesList(listHead, tail) == NULL){ //Deve ser tail ou head ? Perguntar ao prof
-        if((newNode = (Nodes*) malloc(sizeof(Nodes))) == NULL){   /** Creation of a New Node **/
-            printf("Memory is full. Couldn't register request.\n");
-		    return listHead;
-        } 
-        newNode->id=tail;
-        newNode->next=NULL;
-        newNode->adjHead=NULL;
+        newNode=createNode(listHead,tail);
         listHead=insertNode(listHead, newNode, newNode->id);    
     }
     else{
@@ -113,13 +126,29 @@ Nodes *createNode(Nodes *listHead, int tail, int head, int type){
     return listHead;
 }
 
+/** Creation of a new node (list of Nodes) **/
+Nodes *createNode(Nodes *listHead, int tail){ 
+
+    Nodes *newNode=NULL;
+    
+    if((newNode = (Nodes*) malloc(sizeof(Nodes))) == NULL){   //Creation of a New Node 
+        printf("Memory is full. Couldn't register request.\n");
+	    return listHead;
+    } 
+    
+    newNode->id=tail;
+    newNode->next=NULL;
+    newNode->adjHead=NULL;
+
+    return newNode;
+}
+
 /** Creates a new adjacent nodes referent to the Node in the Nodes List **/
 Adj *createAdj(Adj *listHead, int tail, int head, int type){ 
 
     Adj *newAdj;
 
-    /** Creation of a New Node **/
-    if((newAdj = (Adj*) malloc(sizeof(Adj))) == NULL){
+    if((newAdj = (Adj*) malloc(sizeof(Adj))) == NULL){ //Create a new Adjacent
 		return listHead;
     }
 
@@ -217,32 +246,134 @@ void Print_List_of_Adjacencies(Nodes *listHead){
     return;
 }
 
-void Print_List(Nodes *listHead){
+int walk_trough_nodesList(Nodes *listHead){
     
     Nodes *auxH, *auxT;
+    int n_nodes=0;
     
     if(listHead==NULL){
-        printf("ups!\n");
+        return n_nodes;
+    }else{
+        n_nodes++;
+        auxH=listHead;
+        //printf("id:%d\n",auxH->id);
+        auxT=listHead->next;
+        while( auxT != NULL){
+            n_nodes++;
+            auxH=auxT;
+            auxT=auxT->next;
+            //printf("id:%d\n",auxH->id);
+        }
+        //printf("NULL\n");
+    }
+
+    return n_nodes;
+} 
+
+//Função que "Acorda" um nó do grafo
+Nodes *wakeNode(Nodes *listHead, int awake_id){
+
+    Nodes *auxT;
+    int i=0;
+
+    if(listHead == NULL){
+        return NULL;
+    }else{     
+        auxT=listHead;
+        if(awake_id == 0)
+            return auxT;
+        i++;
+        while(auxT->next !=NULL){
+            auxT=auxT->next;
+            if( i == awake_id )
+                return auxT;
+            i++;
+        }
+    }
+    return NULL;
+}
+
+Event *searchNeighbors(Event *eventHead, Nodes *node){
+
+    Adj *auxT;
+
+    if(node==NULL){
+        return eventHead;
+    }else{
+        auxT=node->adjHead;
+            eventHead=createEvent(eventHead, node, auxT);
+        while(auxT->next != NULL){
+            auxT=auxT->next;
+            eventHead=createEvent(eventHead, node, auxT);
+        }
+    }
+    return eventHead;
+}
+
+//Funcao que cria um novo evento para poder ser inserido no calendario
+Event *createEvent(Event *listHead, Nodes *node, Adj *adj) //Também é necessário a cabeça da lista de eventos
+{
+    Event *newEvent=NULL;
+   
+    if((newEvent = (Event*) malloc(sizeof(Event))) == NULL){   /** Creation of a New Event **/
+        printf("Memory is full. Couldn't register request.\n");
+		return listHead;
+    } 
+    newEvent->time=1+rand()%3;
+    newEvent->out_node=node->id;
+    newEvent->in_node=adj->id;
+    newEvent->type=adj->type;
+    printf("time=%d | out_node=%d | in_node=%d | type=%d\n",newEvent->time,newEvent->out_node,newEvent->in_node,newEvent->type);
+
+    return listHead=insertEvent(listHead, newEvent);
+}
+
+Event *insertEvent(Event *listHead, Event *newEvent){
+
+    Event *auxT;
+
+    if(listHead==NULL){
+        return newEvent;
+    }else{
+        if(newEvent->time < listHead->time){
+            newEvent->next=listHead;
+            listHead=newEvent;
+        }
+        else{
+            auxT=listHead;
+            while(auxT->next!=NULL){
+                auxT=auxT->next;
+                if(newEvent->time < auxT->time){
+                    newEvent->next=auxT;
+                    auxT=newEvent;
+                    return listHead;
+                }
+            }
+            auxT->next=newEvent;
+            newEvent->next=NULL;
+        }
+    }
+
+    return listHead;
+}
+
+void printEvents(Event *listHead){
+    
+    Event *auxH, *auxT;
+    
+    if(listHead==NULL){
         return;
     }else{
         auxH=listHead;
-        printf("id:%d\n",auxH->id);
+        printf("[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->out_node,auxH->in_node,auxH->type); fflush(stdout);//prompt
         auxT=listHead->next;
         while( auxT != NULL){
             auxH=auxT;
             auxT=auxT->next;
-            printf("id:%d\n",auxH->id);
+            printf("[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->out_node,auxH->in_node,auxH->type); fflush(stdout);//prompt
         }
         printf("NULL\n");
     }
 
     return;
 } 
-
-
-
-//Funcao que cria um novo evento para poder ser inserido no calendario
-void createEventNode(Event *new_node)
-{
-    
-}
