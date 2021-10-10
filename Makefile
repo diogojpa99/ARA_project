@@ -5,7 +5,7 @@ CC = gcc #compiler
 TARGET = graph #target file name
 
 all:
-	$(CC) -o $(TARGET) readFile.c
+	$(CC) -o $(TARGET) readFile.c nodes.c calendar.c
 
 
 clean:
