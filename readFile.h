@@ -17,10 +17,9 @@ typedef struct _Event{
     int dest_node; //Se dest_node = -1 então trata-se de uma primeira menssagem quando um nó ainda não sabe quem são sos seus vizinhos
     int origin_node;
     int type;
-    int cost[20];// Vetor na forma | nó1 | nó2 | custo de 1 para 2 |
+    int message[3];// Vetor na forma | nó1 | nó2 | custo de 1 para 2 |
     struct _Event *next;
 } Event;
-
 
 
 // Implementar o grafo pelo método de lista de adjacências
@@ -35,13 +34,12 @@ typedef struct _Adj{
 typedef struct _DestinyNode{
     int dest_id;
     int cost;
-    int next_id;
+    int neighbour_id;
     struct _DestinyNode *next_dest;
 } DestNode;
 
 typedef struct _Nodes{
     int id;
-    char message[6]; 
     Adj *adjHead;
     DestNode *destHead;
     struct _Nodes *next;

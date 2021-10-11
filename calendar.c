@@ -3,8 +3,6 @@
 #include "readFile.h"
 
 
-
-
 //Funcao que cria um novo evento para poder ser inserido no calendario
 Event *createEvent(Event *listHead, Nodes *node, Adj *adj, int type_ev) //Também é necessário a cabeça da lista de eventos
 {
@@ -22,14 +20,14 @@ Event *createEvent(Event *listHead, Nodes *node, Adj *adj, int type_ev) //També
     switch (type_ev)
     {
     case annouce:
-        newEvent->cost[0] = node->id;
-        newEvent->cost[1] = node->id;
-        newEvent->cost[2] = 0;
+        newEvent->message[0] = node->id;
+        newEvent->message[1] = node->id;
+        newEvent->message[2] = 0;
         break;
     case rep_annouce:// fazer para o caso de estarmos a passar uma mensagem vinda de outro nó
-        newEvent->cost[0] = node->id;
-        newEvent->cost[1] = -1;
-        newEvent->cost[2] = 0;
+        newEvent->message[0] = node->id;
+        newEvent->message[1] = -1;
+        newEvent->message[2] = 0;
 
         break;
     
@@ -99,13 +97,13 @@ void printEvents(Event *listHead){
     }else{
         auxH=listHead;
         
-        printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->cost[0], auxH->cost[1], auxH->cost[2]);
+        printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->message[0], auxH->message[1], auxH->message[2]);
         printf("\t[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
         auxT=listHead->next;
         while( auxT != NULL){
             auxH=auxT;
             auxT=auxT->next;
-            printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->cost[0], auxH->cost[1], auxH->cost[2]);
+            printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->message[0], auxH->message[1], auxH->message[2]);
             printf("\t[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
         }
         printf("NULL\n");
@@ -114,5 +112,31 @@ void printEvents(Event *listHead){
     return;
 }
 
+Event *processCalendar(Event *listHead, Nodes *nodesHead)
+{
+    Event *newHead;
+    
+    if(listHead == NULL){
+        return;
+    }else{
+        newHead = listHead;
+        listHead = listHead->next;
+        processEvent(newHead, nodesHead);
+
+    }
+
+    return;
+}
+
+Event *processEvent(Event *event, Nodes *nodesHead)
+{
+    Nodes *auxNode = NULL;
+
+
+    auxNode = searchNodesList(nodesHead, event->dest_node);
+    
+
+
+}
 
     

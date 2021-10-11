@@ -37,6 +37,7 @@ int main()
         printf("\nmain: Awaken Node id(rand):%d(%d)\n",node->id,awaken_node);
     //criar eventos de anuncio para o nó que se acordou
     eventHead = announceNode(eventHead, node);
+    processCalendar(eventHead, nodesHead);
 
 
 
