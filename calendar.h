@@ -13,8 +13,10 @@ Event *insertEventOrdered(Event *listHead, Event *newEvent);
 
 void printEvents(Event *listHead);
 
-Event *processCalendar(Event *listHead, Nodes *nodesHead);
+void processCalendar(Event *listHead, Nodes *nodesHead);
 
 Event *processEvent(Event *event, Nodes *nodesHead);
+
+void removeEvent(Event *event);
 
 #endif //CALENDAR INCLUDED

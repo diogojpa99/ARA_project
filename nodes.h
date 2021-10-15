@@ -20,10 +20,12 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode, int id);
 
 Nodes *searchNodesList(Nodes *listHead, int id);
 
-void Print_List_of_Adjacencies(Nodes *listHead);
+void Print_List_of_Adjacencies(Nodes *list_Head);
 
 int walk_trough_nodesList(Nodes *listHead);
 
 Nodes *wakeNode(Nodes *listHead, int awake_id);
+
+void updateDestToNode(int origin_id, Nodes *dest_node);
 
 #endif //NODES INCLUDED

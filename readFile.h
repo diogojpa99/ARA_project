@@ -17,7 +17,7 @@ typedef struct _Event{
     int dest_node; //Se dest_node = -1 então trata-se de uma primeira menssagem quando um nó ainda não sabe quem são sos seus vizinhos
     int origin_node;
     int type;
-    int message[3];// Vetor na forma | nó1 | nó2 | custo de 1 para 2 |
+    int message[3];// Vetor na forma | nó1 - nó de inicio | nó2 | estimativa de custo de 1 para 2 |
     struct _Event *next;
 } Event;
 
@@ -32,9 +32,9 @@ typedef struct _Adj{
 } Adj;
 
 typedef struct _DestinyNode{
-    int dest_id;
+    int dest_id;//destino a que consigo chegar
     int cost;
-    int neighbour_id;
+    int neighbour_id;//vizinho por onde recebi a informacao do destino
     struct _DestinyNode *next_dest;
 } DestNode;
 

@@ -81,7 +81,7 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode, int id){ //Insert the new Nod
     Nodes *auxT;
 
     /** Inserting the new node in the end of the nodes list and returning the list head**/
-    if(listHead==NULL){
+    if(listHead == NULL){
         listHead=newNode;
     }else{
         auxT=listHead;
@@ -102,18 +102,18 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode, int id){ //Insert the new Nod
 * If there is a match the function retunrs 1, theis means that the Node is already in the Nodes List, so we don´t create the        * 
 * same Nome two times. If there is no match, the fuction returns zero and we can create the new node and add him to the Nodes List. *
 *   */
-Nodes *searchNodesList(Nodes *listHead, int id){ 
+Nodes *searchNodesList(Nodes *list_Head, int id){ 
 
     Nodes *auxT;
 
-    if(listHead == NULL){
+    if(list_Head == NULL){
         return NULL;
     }else{     
-        auxT=listHead;
+        auxT = list_Head;
         if(auxT->id == id)
             return auxT;
         while(auxT->next !=NULL){
-            auxT=auxT->next;
+            auxT = auxT->next;
             if( auxT->id == id ){
                 //printf("searchNodesList: auxT encontrado: %d\n", auxT->id); // DÚVIDA: A imprimir duas vezes, porquê ?
                 return auxT;
@@ -188,4 +188,10 @@ Nodes *wakeNode(Nodes *listHead, int awake_id){
         }
     }
     return NULL;
+}
+
+
+void updateDestToNode(int origin_id, Nodes *dest_node)
+{
+    
 }

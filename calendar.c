@@ -11,11 +11,13 @@ Event *createEvent(Event *listHead, Nodes *node, Adj *adj, int type_ev) //També
     if((newEvent = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
         printf("Memory is full. Couldn't register request.\n");
 		return listHead;
-    } 
+    }
+
     newEvent->time = 1+rand()%3;
     newEvent->origin_node = node->id;
     newEvent->dest_node = adj->id;
     newEvent->type = adj->type;
+    newEvent->next = NULL;
 
     switch (type_ev)
     {
@@ -38,7 +40,7 @@ Event *createEvent(Event *listHead, Nodes *node, Adj *adj, int type_ev) //També
 
     printf("time=%d | out_node=%d | in_node=%d | type=%d\n",newEvent->time,newEvent->origin_node,newEvent->dest_node,newEvent->type);
 
-    return listHead=insertEventOrdered(listHead, newEvent);
+    return listHead = insertEventOrdered(listHead, newEvent);
 }
 
 Event *announceNode(Event *eventHead, Nodes *node){
@@ -92,10 +94,10 @@ void printEvents(Event *listHead){
     
     Event *auxH, *auxT;
     
-    if(listHead==NULL){
+    if(listHead == NULL){
         return;
     }else{
-        auxH=listHead;
+        auxH = listHead;
         
         printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->message[0], auxH->message[1], auxH->message[2]);
         printf("\t[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
@@ -112,31 +114,46 @@ void printEvents(Event *listHead){
     return;
 }
 
-Event *processCalendar(Event *listHead, Nodes *nodesHead)
+void processCalendar(Event *events_Head, Nodes *nodes_Head)
 {
-    Event *newHead;
+    Event *auxH, *auxT  = NULL;
     
-    if(listHead == NULL){
+    if(events_Head == NULL){
         return;
     }else{
-        newHead = listHead;
-        listHead = listHead->next;
-        processEvent(newHead, nodesHead);
+        auxH = events_Head;
+        processEvent(auxH, nodes_Head);
 
+        auxT = events_Head->next;
+        while (auxT != NULL)
+        {
+            auxH = auxT;
+            processEvent(auxT, nodes_Head);
+            auxT = auxT->next;
+            
+            //events_Head = auxT;
+            //removeEvent(auxH);
+        }
+        
     }
 
     return;
 }
 
-Event *processEvent(Event *event, Nodes *nodesHead)
+Event *processEvent(Event *event, Nodes *nodes_Head)
 {
-    Nodes *auxNode = NULL;
+    Nodes *dest_Node, *orig_Node = NULL;
 
+    dest_Node = searchNodesList(nodes_Head, event->dest_node);
+    orig_Node = searchNodesList(nodes_Head, event->origin_node);
 
-    auxNode = searchNodesList(nodesHead, event->dest_node);
-    
+    updateDestToNode(orig_Node->id, dest_Node);
 
+}
 
+void removeEvent(Event *event)
+{
+    free(event);
 }
 
     
