@@ -12,8 +12,10 @@
 
 enum event_type{annouce, rep_annouce};
 
+int Dn = 0;
+
 typedef struct _Event{
-    int time; 
+    int An; //Tempo de chegada ao destino do evento, ou seja, tempo em que esse evento vai ser processado
     int dest_node; //Se dest_node = -1 então trata-se de uma primeira menssagem quando um nó ainda não sabe quem são sos seus vizinhos
     int origin_node;
     int type;
@@ -25,9 +27,8 @@ typedef struct _Event{
 // Implementar o grafo pelo método de lista de adjacências
 
 typedef struct _Adj{
-    int id, neighbor, type; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
+    int id, neighbor, type, An; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
     char message[6];
-
     struct _Adj *next;
 } Adj;
 

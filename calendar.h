@@ -5,18 +5,20 @@
 #include "readFile.h"
 
 
-Event *announceNode(Event *eventHead, Nodes *node);
+Event *announceNode(Event *event_head, Nodes *woken_node);
 
-Event *createEvent(Event *listHead, Nodes *node, Adj *adj, int type_ev);
+Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *dest_node, int woken_id);
+
+Event *createEvent(Event *event_head, Nodes *node_orig, int woken_id, Adj *adj, int cost);
 
 Event *insertEventOrdered(Event *listHead, Event *newEvent);
 
 void printEvents(Event *listHead);
 
-void processCalendar(Event *listHead, Nodes *nodesHead);
+void processCalendar(Event *event_head, Nodes *nodes_orig);
 
 Event *processEvent(Event *event, Nodes *nodesHead);
 
-void removeEvent(Event *event);
+Event *popEvent(Event *event);
 
 #endif //CALENDAR INCLUDED

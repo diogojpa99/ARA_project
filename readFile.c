@@ -7,8 +7,8 @@ int main()
 {
     FILE *fp;
     int tail, head, type, node_id, flag = 0, n_nodes, awaken_node;
-    Nodes *nodesHead = NULL, *newNode = NULL, *node = NULL;
-    Event *eventHead = NULL;
+    Nodes *nodes_Head = NULL, *newNode = NULL, *node = NULL;
+    Event *event_Head = NULL;
 
     fp = fopen("grafo1.txt","r");
     srand(time(0));
@@ -19,31 +19,35 @@ int main()
     }
 
     while( fscanf(fp, "%d %d %d\n", &tail, &head, &type) != EOF ){
-        nodesHead = createGraph(nodesHead, tail, head, type);
+        nodes_Head = createGraph(nodes_Head, tail, head, type);
     }
-    Print_List_of_Adjacencies(nodesHead);
+    Print_List_of_Adjacencies(nodes_Head);
     
     /******************************************** Simulation ***********************************************/
 
     printf("The simulation has started!\n");
-    n_nodes = walk_trough_nodesList(nodesHead);
-    awaken_node = rand()%n_nodes;
+    
+    simulation(nodes_Head, event_Head);
+    
 
-    node = wakeNode(nodesHead,awaken_node); //Awake random Node in the Nodes List
+    //node = wakeNode(nodes_Head, awaken_node); //Awake random Node in the Nodes List
 
     if(node == NULL)
         printf("UPS!\n");
     else
-        printf("\nmain: Awaken Node id(rand):%d(%d)\n",node->id,awaken_node);
-    //criar eventos de anuncio para o nó que se acordou
-    eventHead = announceNode(eventHead, node);
-    processCalendar(eventHead, nodesHead);
+        printf("\nmain: Awaken Node id(rand):%d(%d)\n", node->id, awaken_node);
+
+
+
+    /**** criar eventos de anuncio para o nó que se acordou ****/
+    //event_Head = announceNode(event_Head, node);
+    //processCalendar(event_Head, nodes_Head);
 
 
 
     //Processar o calendário
 
-    printEvents(eventHead);
+    printEvents(event_Head);
 
     /**************************************** Interactive Mode ********************************************
         printf("Insert the id of the node you want to wake: "); fflush(stdout);//prompt

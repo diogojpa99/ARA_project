@@ -2,62 +2,73 @@
 #include "nodes.h"
 #include "readFile.h"
 
+//AnnounceNode: Para cada ligação (adjacente), vai se criar um novo evento.
+Event *announceNode(Event *event_head, Nodes *woken_node){
 
-//Funcao que cria um novo evento para poder ser inserido no calendario
-Event *createEvent(Event *listHead, Nodes *node, Adj *adj, int type_ev) //Também é necessário a cabeça da lista de eventos
-{
-    Event *newEvent = NULL;
-   
-    if((newEvent = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
-        printf("Memory is full. Couldn't register request.\n");
-		return listHead;
+    Adj *auxT;
+
+    if(woken_node == NULL){
+        return event_head;
+    }else{
+        auxT = node_orig->adjHead;
+            event_head = createEvent(event_head, node_orig, node_orig->id, auxT, 0);
+        while(auxT->next != NULL){
+            auxT = auxT->next;
+            event_head = createEvent(event_head, node_orig, node_orig->id, auxT, 0);
+        }
     }
-
-    newEvent->time = 1+rand()%3;
-    newEvent->origin_node = node->id;
-    newEvent->dest_node = adj->id;
-    newEvent->type = adj->type;
-    newEvent->next = NULL;
-
-    switch (type_ev)
-    {
-    case annouce:
-        newEvent->message[0] = node->id;
-        newEvent->message[1] = node->id;
-        newEvent->message[2] = 0;
-        break;
-    case rep_annouce:// fazer para o caso de estarmos a passar uma mensagem vinda de outro nó
-        newEvent->message[0] = node->id;
-        newEvent->message[1] = -1;
-        newEvent->message[2] = 0;
-
-        break;
-    
-    default:
-        break;
-    }
-    
-
-    printf("time=%d | out_node=%d | in_node=%d | type=%d\n",newEvent->time,newEvent->origin_node,newEvent->dest_node,newEvent->type);
-
-    return listHead = insertEventOrdered(listHead, newEvent);
+    return event_head;
 }
 
-Event *announceNode(Event *eventHead, Nodes *node){
+//RepAnnouncement: Para cada ligação (adjacente), vai se criar um novo evento.
+Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *dest_node, int woken_id){
 
     Adj *auxT;
 
     if(node == NULL){
         return eventHead;
     }else{
-        auxT = node->adjHead;
-            eventHead = createEvent(eventHead, node, auxT, annouce);
+        auxT = node_orig->adjHead;
+            eventHead = createEvent(eventHead, node_orig, woken_id, auxT, dest_node->cost);
         while(auxT->next != NULL){
             auxT = auxT->next;
-            eventHead = createEvent(eventHead, node, auxT, annouce);
+            eventHead = createEvent(eventHead, node_orig, woken_id, auxT, dest_node->cost);
         }
     }
     return eventHead;
+}
+
+//Funcao que cria um novo evento para ser inserido no calendario
+/*Parametros:
+list_head - cabeça da lista de eventos*/
+
+Event *createEvent(Event *event_head, Nodes *node_orig, int woken_id, Adj *adj, int cost) 
+{
+    Event *new_event = NULL;
+    int Sn;
+   
+    if((new_event = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
+        printf("Memory is full. Couldn't register request.\n");
+		return event_head;
+    }
+
+    Sn = 1 + rand()%3;
+    new_event->An = Dn + Sn;
+    if (new_event->An < adj->An) //Tratar da fila de espera de cada ligação 
+        new_event->An=adj->An;     
+    new_event->origin_node = node_orig->id;
+    new_event->dest_node = adj->id;
+    new_event->type = adj->type;
+    new_event->next = NULL;
+
+    //Message sent from an node x to his neighbor
+    new_event->message[0] = node_orig->id;
+    new_event->message[1] = woken_id;
+    new_event->message[2] = cost; 
+
+    //printf("time=%d | out_node=%d | in_node=%d | type=%d\n",newEvent->time,newEvent->origin_node,newEvent->dest_node,newEvent->type);
+
+    return event_head = insertEventOrdered(event_head, new_event);
 }
 
 
@@ -114,27 +125,12 @@ void printEvents(Event *listHead){
     return;
 }
 
-void processCalendar(Event *events_Head, Nodes *nodes_Head)
+void processCalendar(Event *events_Head, Nodes *woken_node)
 {
-    Event *auxH, *auxT  = NULL;
+    event_Head = announceNode(event_head, woken_node); //First wake up the node, create the respective events and insert them in the calendar
     
-    if(events_Head == NULL){
-        return;
-    }else{
-        auxH = events_Head;
-        processEvent(auxH, nodes_Head);
-
-        auxT = events_Head->next;
-        while (auxT != NULL)
-        {
-            auxH = auxT;
-            processEvent(auxT, nodes_Head);
-            auxT = auxT->next;
-            
-            //events_Head = auxT;
-            //removeEvent(auxH);
-        }
-        
+    while(events_Head != NULL){
+        processEvent(events_Head, event_Head->dest_node);
     }
 
     return;
@@ -144,7 +140,7 @@ void processCalendar(Event *events_Head, Nodes *nodes_Head)
 
 Event *processEvent(Event *event, Nodes *nodes_Head)
 {
-    Nodes *dest_Node, *orig_Node = NULL;
+    Nodes *dest_Node = NULL, *orig_Node = NULL;
 
     dest_Node = searchNodesList(nodes_Head, event->dest_node);//nó de destino da mensagem
     orig_Node = searchNodesList(nodes_Head, event->origin_node);//nó de origem da mensagem
@@ -153,9 +149,15 @@ Event *processEvent(Event *event, Nodes *nodes_Head)
 
 }
 
-void removeEvent(Event *event)
+Event *popEvent(Event *event_head)
 {
-    free(event);
+    Event *auxH = NULL;
+    
+    auxH = event_head;
+    event_head = event_head->next;
+    free(auxH);
+
+    return event_head;
 }
 
     

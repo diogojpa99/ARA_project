@@ -1,6 +1,7 @@
 #include "nodes.h"
 #include "calendar.h"
 #include "readFile.h"
+
 /** createNode: Creates a new node in the Nodes List **/
 Nodes *createGraph(Nodes *listHead, int tail, int head, int type){ 
 
@@ -52,6 +53,8 @@ Adj *createAdj(Adj *listHead, int tail, int head, int type){
     newAdj->neighbor = tail;
     newAdj->id = head;
     newAdj->type = type;
+    newAdj->An = 0;
+    newAdj->next = NULL;
 
     return newAdj;
 }
@@ -143,65 +146,22 @@ void Print_List_of_Adjacencies(Nodes *listHead){
     return;
 }
 
-int walk_trough_nodesList(Nodes *listHead){
-    
-    Nodes *auxH, *auxT;
-    int n_nodes = 0;
-    
-    if(listHead == NULL){
-        return n_nodes;
-    }else{
-        n_nodes++;
-        auxH = listHead;
-        //printf("id:%d\n",auxH->id);
-        auxT = listHead->next;
-        while( auxT != NULL){
-            n_nodes++;
-            auxH = auxT;
-            auxT = auxT->next;
-            //printf("id:%d\n",auxH->id);
-        }
-        //printf("NULL\n");
-    }
-
-    return n_nodes;
-} 
-
-//Função que "Acorda" um nó do grafo
-Nodes *wakeNode(Nodes *listHead, int awake_id){
-
-    Nodes *auxT;
-    int i = 0;
-
-    if(listHead == NULL){
-        return NULL;
-    }else{     
-        auxT = listHead;
-        if(awake_id == 0)
-            return auxT;
-        i++;
-        while(auxT->next != NULL){
-            auxT = auxT->next;
-            if( i == awake_id )
-                return auxT;
-            i++;
-        }
-    }
-    return NULL;
-}
-
-
 void updateDestToNode(Nodes *dest_node, int *message)
 {
     DestNode *auxH, *auxT  = NULL;
 
     //Procurar na lista destinos do nó a quem se destina a mensagem o nó de onde vem a mensagem
     auxH = searchDestiny(dest_node->destHead, message[0]);
+
     if(auxH == NULL){
         //criar o destino para o nó adjacente
         dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[0], 1);
     }
-    auxH = searchDestiny(dest_node->destHead, message[0]);
+    /*Temos que criar eventos a dizer que o no que recebeu a sms consegue chegar ao seu adjacente*/
+
+
+
+    auxH = searchDestiny(dest_node->destHead, message[1]);
     if(auxH == NULL){
         //criar o destino para o nó adjacente
         dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[1], message[2]);

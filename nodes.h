@@ -22,10 +22,6 @@ Nodes *searchNodesList(Nodes *listHead, int id);
 
 void Print_List_of_Adjacencies(Nodes *list_Head);
 
-int walk_trough_nodesList(Nodes *listHead);
-
-Nodes *wakeNode(Nodes *listHead, int awake_id);
-
 void updateDestToNode(Nodes *dest_node, int *message);
 
 DestNode *searchDestiny(DestNode *dest_head, int dest_id);

@@ -1,0 +1,27 @@
+#include "calendar.h"
+#include "nodes.h"
+#include "readFile.h"
+#include "simulation.h"
+
+/**********************************     Simulation      *****************************************/
+/* Vamos acordar cada nó da lista de nós, separadamente. Ou seja, primeiro acordamos um nó x e  */
+/* preenchemos as tabelas de encaminhamento dos nós que conseguem chegar ao nó de destino x. E  */
+/* Depois fazemos o mesmo para os restantes nós da lista de nós.                                */
+/************************************************************************************************/
+void simulation(Nodes *nodes_head, Event *event_head){
+    
+    Nodes *auxT = NULL; 
+    
+    if(nodes_head == NULL){
+        return NULL;
+    }else{
+        auxT = nodes_head;
+        ProcessCalendar(event_Head, auxT);
+        while( auxT->next != NULL){
+            auxT = auxT->next;
+            ProcessCalendar(event_Head, auxT);
+        }
+    }
+    return;
+} 
+
