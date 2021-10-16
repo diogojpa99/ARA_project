@@ -10,11 +10,11 @@ Event *announceNode(Event *event_head, Nodes *woken_node){
     if(woken_node == NULL){
         return event_head;
     }else{
-        auxT = node_orig->adjHead;
-            event_head = createEvent(event_head, node_orig, node_orig->id, auxT, 0);
+        auxT = woken_node->adjHead;
+            event_head = createEvent(event_head, woken_node, woken_node->id, auxT, 0);
         while(auxT->next != NULL){
             auxT = auxT->next;
-            event_head = createEvent(event_head, node_orig, node_orig->id, auxT, 0);
+            event_head = createEvent(event_head, woken_node, woken_node->id, auxT, 0);
         }
     }
     return event_head;
@@ -42,10 +42,10 @@ Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *dest_node, 
 /*Parametros:
 list_head - cabeça da lista de eventos*/
 
-Event *createEvent(Event *event_head, Nodes *node_orig, int woken_id, Adj *adj, int cost) 
+Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *adj, int cost) 
 {
     Event *new_event = NULL;
-    int Sn;
+    int Sn = 0;
    
     if((new_event = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
         printf("Memory is full. Couldn't register request.\n");
@@ -56,14 +56,14 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_id, Adj *adj, 
     new_event->An = Dn + Sn;
     if (new_event->An < adj->An) //Tratar da fila de espera de cada ligação 
         new_event->An=adj->An;     
-    new_event->origin_node = node_orig->id;
-    new_event->dest_node = adj->id;
-    new_event->type = adj->type;
+    new_event->origin_node = node_orig->id; // nó que está a enviar a sms
+    new_event->dest_node = adj->id; // nó a quem se destina a sms
+    new_event->type = adj->type; //relaçao entre os dois nós
     new_event->next = NULL;
 
     //Message sent from an node x to his neighbor
     new_event->message[0] = node_orig->id;
-    new_event->message[1] = woken_id;
+    new_event->message[1] = woken_node_id;
     new_event->message[2] = cost; 
 
     //printf("time=%d | out_node=%d | in_node=%d | type=%d\n",newEvent->time,newEvent->origin_node,newEvent->dest_node,newEvent->type);
