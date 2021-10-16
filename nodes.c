@@ -199,30 +199,20 @@ void updateDestToNode(Nodes *dest_node, int *message)
     auxH = searchDestiny(dest_node->destHead, message[0]);
     if(auxH == NULL){
         //criar o destino para o nó adjacente
-        dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[0], message[2]);
+        dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[0], 1);
+    }
+    auxH = searchDestiny(dest_node->destHead, message[0]);
+    if(auxH == NULL){
+        //criar o destino para o nó adjacente
+        dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[1], message[2]);
+    }else{
+        //O destino já existe e temos de verificar se vale apena mudar caso a estimativa melhore
+        if(auxH->cost > message[2]){
+            auxH->cost = message[2];
+            auxH->neighbour_id = message[1];
+        }
     }
     
-
-
-    /*if(dest_node->destHead == NULL){
-        //criar o destino para o nó adjacente que nos enviou a mensagem
-        dest_node->destHead = (dest_node->destHead, message);
-
-        //criar o destino que vem na mensagem
-    }else{
-        auxH = dest_node->destHead;
-        //Processar a cabeça caso corresponda ao destino
-        if(auxH->dest_id)
-
-        auxT = auxH->next_dest;
-        while (auxT != NULL)
-        {
-            auxH = auxT;
-            
-            auxT = auxT->next_dest;
-        }
-        
-    }*/
 }
 
 DestNode *searchDestiny(DestNode *dest_head, int dest_id)
@@ -243,30 +233,39 @@ DestNode *searchDestiny(DestNode *dest_head, int dest_id)
             }
         }
     }
+    //Se não se tiver encontrado o destino 
     return NULL;
 }
 
 DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost)
 {
-    DestNode *aux = NULL;
-
-    aux = dest_head;
+    DestNode *auxH, *auxT = NULL;
 
     //primeiro destino
     //Se é o primeiro destino então criamos logo dois destinos:
     // - destino para o nó adjacente de onde recebemos a mensagem
     // - destino para o nó anunciado na mensagem
     //
-    if(aux == NULL){
-        //Destino = nó adjacente
-        aux = (DestNode*) calloc(1, sizeof(DestNode));
-        if(aux == NULL){
+    auxH = (DestNode*) calloc(1, sizeof(DestNode));
+        if(auxH == NULL){
             printf("Error: Could not add destiny");
-            return;
+            return NULL;
         }
-        aux->neighbour_id = neigbour_id;
-        aux->dest_id = dest_id;
-        aux->cost = 1;
-    }
+    auxH->neighbour_id = neigbour_id;
+    auxH->dest_id = dest_id;
+    auxH->cost = 1;
+    auxH->next_dest = NULL;
 
+    if(dest_head == NULL){
+        //se for o primeiro destino a ser criado
+        dest_head = auxH;
+        dest_head->next_dest = NULL;
+    }else{
+        //Se já existirem destinos inserimos na cabeça da lista
+        auxT = auxH;
+        auxH = dest_head->next_dest;
+        dest_head = auxT;
+        dest_head->next_dest = auxH;
+    }
+    return dest_head;
 }
