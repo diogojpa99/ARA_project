@@ -26,6 +26,10 @@ int walk_trough_nodesList(Nodes *listHead);
 
 Nodes *wakeNode(Nodes *listHead, int awake_id);
 
-void updateDestToNode(int origin_id, Nodes *dest_node);
+void updateDestToNode(Nodes *dest_node, int *message);
+
+DestNode *searchDestiny(DestNode *dest_head, int dest_id);
+
+DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost);
 
 #endif //NODES INCLUDED

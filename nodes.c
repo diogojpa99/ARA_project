@@ -146,19 +146,19 @@ void Print_List_of_Adjacencies(Nodes *listHead){
 int walk_trough_nodesList(Nodes *listHead){
     
     Nodes *auxH, *auxT;
-    int n_nodes=0;
+    int n_nodes = 0;
     
-    if(listHead==NULL){
+    if(listHead == NULL){
         return n_nodes;
     }else{
         n_nodes++;
-        auxH=listHead;
+        auxH = listHead;
         //printf("id:%d\n",auxH->id);
-        auxT=listHead->next;
+        auxT = listHead->next;
         while( auxT != NULL){
             n_nodes++;
-            auxH=auxT;
-            auxT=auxT->next;
+            auxH = auxT;
+            auxT = auxT->next;
             //printf("id:%d\n",auxH->id);
         }
         //printf("NULL\n");
@@ -191,7 +191,82 @@ Nodes *wakeNode(Nodes *listHead, int awake_id){
 }
 
 
-void updateDestToNode(int origin_id, Nodes *dest_node)
+void updateDestToNode(Nodes *dest_node, int *message)
 {
+    DestNode *auxH, *auxT  = NULL;
+
+    //Procurar na lista destinos do nó a quem se destina a mensagem o nó de onde vem a mensagem
+    auxH = searchDestiny(dest_node->destHead, message[0]);
+    if(auxH == NULL){
+        //criar o destino para o nó adjacente
+        dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[0], message[2]);
+    }
     
+
+
+    /*if(dest_node->destHead == NULL){
+        //criar o destino para o nó adjacente que nos enviou a mensagem
+        dest_node->destHead = (dest_node->destHead, message);
+
+        //criar o destino que vem na mensagem
+    }else{
+        auxH = dest_node->destHead;
+        //Processar a cabeça caso corresponda ao destino
+        if(auxH->dest_id)
+
+        auxT = auxH->next_dest;
+        while (auxT != NULL)
+        {
+            auxH = auxT;
+            
+            auxT = auxT->next_dest;
+        }
+        
+    }*/
+}
+
+DestNode *searchDestiny(DestNode *dest_head, int dest_id)
+{
+    DestNode *auxT;
+
+    if(dest_head == NULL){
+        return NULL;
+    }else{     
+        auxT = dest_head;
+        if(auxT->dest_id == dest_id)
+            return auxT;
+        while(auxT->next_dest != NULL){
+            auxT = auxT->next_dest;
+            if( auxT->dest_id == dest_id ){
+                
+                return auxT;
+            }
+        }
+    }
+    return NULL;
+}
+
+DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost)
+{
+    DestNode *aux = NULL;
+
+    aux = dest_head;
+
+    //primeiro destino
+    //Se é o primeiro destino então criamos logo dois destinos:
+    // - destino para o nó adjacente de onde recebemos a mensagem
+    // - destino para o nó anunciado na mensagem
+    //
+    if(aux == NULL){
+        //Destino = nó adjacente
+        aux = (DestNode*) calloc(1, sizeof(DestNode));
+        if(aux == NULL){
+            printf("Error: Could not add destiny");
+            return;
+        }
+        aux->neighbour_id = neigbour_id;
+        aux->dest_id = dest_id;
+        aux->cost = 1;
+    }
+
 }

@@ -140,14 +140,16 @@ void processCalendar(Event *events_Head, Nodes *nodes_Head)
     return;
 }
 
+
+
 Event *processEvent(Event *event, Nodes *nodes_Head)
 {
     Nodes *dest_Node, *orig_Node = NULL;
 
-    dest_Node = searchNodesList(nodes_Head, event->dest_node);
-    orig_Node = searchNodesList(nodes_Head, event->origin_node);
+    dest_Node = searchNodesList(nodes_Head, event->dest_node);//nó de destino da mensagem
+    orig_Node = searchNodesList(nodes_Head, event->origin_node);//nó de origem da mensagem
 
-    updateDestToNode(orig_Node->id, dest_Node);
+    updateDestToNode(dest_Node, event->message);
 
 }
 
