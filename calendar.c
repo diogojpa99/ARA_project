@@ -1,6 +1,6 @@
+#include "readFile.h"
 #include "calendar.h"
 #include "nodes.h"
-#include "readFile.h"
 #include "simulation.h"
 
 //AnnounceNode: Para cada ligação (adjacente), vai se criar um novo evento.

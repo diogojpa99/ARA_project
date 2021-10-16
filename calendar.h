@@ -1,9 +1,9 @@
 #ifndef CALENDAR_INCLUDED
 #define CALENDAR_INCLUDED
 
-#include "nodes.h"
 #include "readFile.h"
-
+#include "nodes.h"
+#include "simulation.h"
 
 Event *announceNode(Event *event_head, Nodes *woken_node);
 

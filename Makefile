@@ -1,18 +1,12 @@
 #make file example
 
 CC = gcc #compiler
+#CFLAGS = -Wall -std=c99 -O3
+TARGET = graph #target file name
 
-readFile.o = readFile.cpp nodes.h calendar.h simulation.h
-	$(CC) -c readFile.cpp
+all:
+	$(CC) -Wall -o $(TARGET) readFile.c nodes.c calendar.c simulation.c
 
-nodes.o = nodes.cpp readFile.h calendar.h simulation.h
-	$(CC) -c nodes.cpp
 
-calendar.o = calendar.cpp readFile.h calendar.h simulation.h
-	$(CC) -c calendar.cpp
-
-simulation.o = simulation.cpp readFile.h calendar.h simulation.h
-	$(CC) -c simulation.cpp
-	
-simulation: readFile.o nodes.o calendar.o simulation.o
-	$(CC) readFile.o nodes.o calendar.o simulation.o
+clean:
+	rm $(TARGET)

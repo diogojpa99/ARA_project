@@ -1,10 +1,10 @@
 #ifndef NODES_INCLUDED
 #define NODES_INCLUDED
 
-
-
 #include "readFile.h"
 #include "calendar.h"
+#include "simulation.h"
+
 
 //Nodes
 

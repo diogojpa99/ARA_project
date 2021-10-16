@@ -7,7 +7,6 @@
 #include <math.h>
 #include <time.h>
 
-
 #define MAX_ID 65535
 
 enum event_type{annouce, rep_annouce};
