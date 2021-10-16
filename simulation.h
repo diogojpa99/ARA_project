@@ -6,7 +6,6 @@
 #include "readFile.h"
 
 
-
-void simulation(Nodes *listHead);
+void simulation(Nodes *nodes_head, Event *event_head);
 
 #endif //SIMULATION INCLUDED

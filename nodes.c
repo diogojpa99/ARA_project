@@ -1,6 +1,7 @@
 #include "nodes.h"
 #include "calendar.h"
 #include "readFile.h"
+#include "simulation.h"
 
 /** createNode: Creates a new node in the Nodes List **/
 Nodes *createGraph(Nodes *listHead, int tail, int head, int type){ 
@@ -146,33 +147,40 @@ void Print_List_of_Adjacencies(Nodes *listHead){
     return;
 }
 
-void updateDestToNode(Nodes *dest_node, int *message)
+
+/*
+updateDestToNode: Se a tabela de encaminhamento de um dado nó for alterada (retorna-se 1), então esse nó tem que anunciar isso
+aos seus vizinhos, logo é necessário criar novos eventos. Caso a tabela de encaminhamento não altere (retorna-se 0), o nó não
+anuncia nada.
+*/
+    DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
 {
-    DestNode *auxH, *auxT  = NULL;
+    DestNode *current_dest = NULL;
 
-    //Procurar na lista destinos do nó a quem se destina a mensagem o nó de onde vem a mensagem
-    auxH = searchDestiny(dest_node->destHead, message[0]);
-
-    if(auxH == NULL){
-        //criar o destino para o nó adjacente
-        dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[0], 1);
-    }
-    /*Temos que criar eventos a dizer que o no que recebeu a sms consegue chegar ao seu adjacente*/
-
-
-
-    auxH = searchDestiny(dest_node->destHead, message[1]);
-    if(auxH == NULL){
-        //criar o destino para o nó adjacente
-        dest_node->destHead = createDestiny(dest_node->destHead, message[0], message[1], message[2]);
+    current_dest = searchDestiny(process_node->destHead, message[1]);
+    if(current_dest == NULL){
+        //criar o destino para o nó adjacente e inserir no topo
+        process_node->destHead = createDestiny(process_node->destHead, message[0], message[1], message[2], type);
+        return process_node->destHead;
     }else{
         //O destino já existe e temos de verificar se vale apena mudar caso a estimativa melhore
-        if(auxH->cost > message[2]){
-            auxH->cost = message[2];
-            auxH->neighbour_id = message[1];
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATENÇÃO ÀS RELAÇÕES COMERCIAIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if( type < current_dest->type){ //1<2<3
+            current_dest->neighbour_id = message[0];
+            current_dest->type = type;
+            current_dest->cost = message[2];
+            return current_dest;
         }
-    }
-    
+        else if( type == current_dest->type){ //Se a relação comercial for a mesma então vemos pelo custo
+            if(message[2] < current_dest->cost){
+                current_dest->neighbour_id = message[0];
+                current_dest->cost = message[2];
+                return current_dest;
+            }
+        }
+    } 
+
+    return NULL;  //Se nada mudar, então não se anuncia nada
 }
 
 DestNode *searchDestiny(DestNode *dest_head, int dest_id)
@@ -187,45 +195,40 @@ DestNode *searchDestiny(DestNode *dest_head, int dest_id)
             return auxT;
         while(auxT->next_dest != NULL){
             auxT = auxT->next_dest;
-            if( auxT->dest_id == dest_id ){
-                
-                return auxT;
-            }
+            if( auxT->dest_id == dest_id ) return auxT;
         }
     }
     //Se não se tiver encontrado o destino 
     return NULL;
 }
 
-DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost)
+DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost, int type)
 {
-    DestNode *auxH, *auxT = NULL;
+    DestNode *new_dest = NULL;
 
     //primeiro destino
     //Se é o primeiro destino então criamos logo dois destinos:
     // - destino para o nó adjacente de onde recebemos a mensagem
     // - destino para o nó anunciado na mensagem
     //
-    auxH = (DestNode*) calloc(1, sizeof(DestNode));
-        if(auxH == NULL){
-            printf("Error: Could not add destiny");
-            return NULL;
+    if((new_dest = (DestNode*) calloc(1, sizeof(DestNode))) == NULL){   
+        printf("Error: Could not add destiny");
+        return NULL;
         }
-    auxH->neighbour_id = neigbour_id;
-    auxH->dest_id = dest_id;
-    auxH->cost = 1;
-    auxH->next_dest = NULL;
+    new_dest->neighbour_id = neigbour_id;
+    new_dest->dest_id = dest_id;
+    new_dest->cost = cost + 1;;
+    new_dest->type = type;
+    new_dest->next_dest = NULL;
 
     if(dest_head == NULL){
         //se for o primeiro destino a ser criado
-        dest_head = auxH;
+        dest_head = new_dest;
         dest_head->next_dest = NULL;
     }else{
         //Se já existirem destinos inserimos na cabeça da lista
-        auxT = auxH;
-        auxH = dest_head->next_dest;
-        dest_head = auxT;
-        dest_head->next_dest = auxH;
+        new_dest->next_dest = dest_head;
+        dest_head = new_dest;
     }
     return dest_head;
 }

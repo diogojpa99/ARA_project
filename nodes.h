@@ -22,10 +22,10 @@ Nodes *searchNodesList(Nodes *listHead, int id);
 
 void Print_List_of_Adjacencies(Nodes *list_Head);
 
-void updateDestToNode(Nodes *dest_node, int *message);
+DestNode *updateDestToNode(Nodes *process_node, int *message, int type);
 
 DestNode *searchDestiny(DestNode *dest_head, int dest_id);
 
-DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost);
+DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost, int type);
 
 #endif //NODES INCLUDED

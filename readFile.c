@@ -1,13 +1,14 @@
 #include "readFile.h"
 #include "calendar.h"
 #include "nodes.h"
+#include "simulation.h"
 
 
 int main()
 {
     FILE *fp;
-    int tail, head, type, node_id, flag = 0, n_nodes, awaken_node;
-    Nodes *nodes_Head = NULL, *newNode = NULL, *node = NULL;
+    int tail, head, type;
+    Nodes *nodes_Head = NULL;
     Event *event_Head = NULL;
 
     fp = fopen("grafo1.txt","r");
@@ -28,24 +29,7 @@ int main()
     printf("The simulation has started!\n");
     
     simulation(nodes_Head, event_Head);
-    
 
-    //node = wakeNode(nodes_Head, awaken_node); //Awake random Node in the Nodes List
-
-    if(node == NULL)
-        printf("UPS!\n");
-    else
-        printf("\nmain: Awaken Node id(rand):%d(%d)\n", node->id, awaken_node);
-
-
-
-    /**** criar eventos de anuncio para o nó que se acordou ****/
-    //event_Head = announceNode(event_Head, node);
-    //processCalendar(event_Head, nodes_Head);
-
-
-
-    //Processar o calendário
 
     printEvents(event_Head);
 

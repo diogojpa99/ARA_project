@@ -35,6 +35,7 @@ typedef struct _Adj{
 typedef struct _DestinyNode{
     int dest_id;//destino a que consigo chegar
     int cost;
+    int type;
     int neighbour_id;//vizinho por onde recebi a informacao do destino
     struct _DestinyNode *next_dest;
 } DestNode;

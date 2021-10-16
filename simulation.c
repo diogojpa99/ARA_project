@@ -1,6 +1,6 @@
+#include "readFile.h"
 #include "calendar.h"
 #include "nodes.h"
-#include "readFile.h"
 #include "simulation.h"
 
 /**********************************     Simulation      *****************************************/
@@ -13,13 +13,13 @@ void simulation(Nodes *nodes_head, Event *event_head){
     Nodes *auxT = NULL; 
     
     if(nodes_head == NULL){
-        return NULL;
+        return;
     }else{
         auxT = nodes_head;
-        ProcessCalendar(event_Head, auxT);
+        processCalendar(event_head, auxT, nodes_head);
         while( auxT->next != NULL){
             auxT = auxT->next;
-            ProcessCalendar(event_Head, auxT);
+            processCalendar(event_head, auxT, nodes_head);
         }
     }
     return;

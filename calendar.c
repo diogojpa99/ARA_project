@@ -1,6 +1,7 @@
 #include "calendar.h"
 #include "nodes.h"
 #include "readFile.h"
+#include "simulation.h"
 
 //AnnounceNode: Para cada ligação (adjacente), vai se criar um novo evento.
 Event *announceNode(Event *event_head, Nodes *woken_node){
@@ -21,18 +22,22 @@ Event *announceNode(Event *event_head, Nodes *woken_node){
 }
 
 //RepAnnouncement: Para cada ligação (adjacente), vai se criar um novo evento.
-Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *dest_node, int woken_id){
+// Mas atenção às leis comerciais !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//Basicamente se houver cliente enviamos, senão houver clientes barulho não se envia nada
+Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *woken_node){
 
-    Adj *auxT;
+    Adj *neighbor;
 
-    if(node == NULL){
+    if(node_orig == NULL){
         return eventHead;
     }else{
-        auxT = node_orig->adjHead;
-            eventHead = createEvent(eventHead, node_orig, woken_id, auxT, dest_node->cost);
-        while(auxT->next != NULL){
-            auxT = auxT->next;
-            eventHead = createEvent(eventHead, node_orig, woken_id, auxT, dest_node->cost);
+         neighbor= node_orig->adjHead;
+            if( woken_node->type == 1 || neighbor->type == 1)
+                eventHead = createEvent(eventHead, node_orig, woken_node->dest_id, neighbor, woken_node->cost);
+        while(neighbor->next != NULL){
+            neighbor = neighbor->next;
+            if( woken_node->type == 1 || neighbor->type == 1)
+                eventHead = createEvent(eventHead, node_orig, woken_node->dest_id, neighbor, woken_node->cost);
         }
     }
     return eventHead;
@@ -54,8 +59,7 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
 
     Sn = 1 + rand()%3;
     new_event->An = Dn + Sn;
-    if (new_event->An < adj->An) //Tratar da fila de espera de cada ligação 
-        new_event->An=adj->An;     
+    if (new_event->An < adj->An) new_event->An=adj->An;  //Tratar da fila de espera de cada ligação    
     new_event->origin_node = node_orig->id; // nó que está a enviar a sms
     new_event->dest_node = adj->id; // nó a quem se destina a sms
     new_event->type = adj->type; //relaçao entre os dois nós
@@ -72,33 +76,33 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
 }
 
 
-Event *insertEventOrdered(Event *listHead, Event *newEvent){
+Event *insertEventOrdered(Event *list_head, Event *new_event){
 
     Event *auxT;
 
-    if(listHead == NULL){
-        return newEvent;
+    if(list_head == NULL){
+        return new_event;
     }else{
-        if(newEvent->time < listHead->time){
-            newEvent->next=listHead;
-            listHead = newEvent;
+        if(new_event->An < list_head->An){
+            new_event->next=list_head;
+            list_head = new_event;
         }
         else{
-            auxT = listHead;
+            auxT = list_head;
             while(auxT->next != NULL){
                 auxT = auxT->next;
-                if(newEvent->time < auxT->time){
-                    newEvent->next = auxT;
-                    auxT = newEvent;
-                    return listHead;
+                if(new_event->An < auxT->An){
+                    new_event->next = auxT;
+                    auxT = new_event;
+                    return list_head;
                 }
             }
-            auxT->next = newEvent;
-            newEvent->next = NULL;
+            auxT->next = new_event;
+            new_event->next = NULL;
         }
     }
 
-    return listHead;
+    return list_head;
 }
 
 void printEvents(Event *listHead){
@@ -111,13 +115,13 @@ void printEvents(Event *listHead){
         auxH = listHead;
         
         printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->message[0], auxH->message[1], auxH->message[2]);
-        printf("\t[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
+        printf("\t[time=%d|%d->%d|Type:%d]->",auxH->An,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
         auxT=listHead->next;
         while( auxT != NULL){
             auxH=auxT;
             auxT=auxT->next;
             printf("\nEvent: \n\torigin %d\n\tdest %d\n \t%d -> %d = %d \n", auxH->origin_node, auxH->dest_node, auxH->message[0], auxH->message[1], auxH->message[2]);
-            printf("\t[time=%d|%d->%d|Type:%d]->",auxH->time,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
+            printf("\t[time=%d|%d->%d|Type:%d]->",auxH->An,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
         }
         printf("NULL\n");
     }
@@ -125,29 +129,36 @@ void printEvents(Event *listHead){
     return;
 }
 
-void processCalendar(Event *events_Head, Nodes *woken_node)
+void processCalendar(Event *events_Head, Nodes *woken_node, Nodes *nodes_head)
 {
-    event_Head = announceNode(event_head, woken_node); //First wake up the node, create the respective events and insert them in the calendar
+    events_Head = announceNode(events_Head, woken_node); //First wake up the node, create the respective events and insert them in the calendar
     
     while(events_Head != NULL){
-        processEvent(events_Head, event_Head->dest_node);
+        processEvent(events_Head, events_Head->dest_node, nodes_head);
+        events_Head = popEvent(events_Head);
     }
 
     return;
 }
 
 
-
-Event *processEvent(Event *event, Nodes *nodes_Head)
+void processEvent(Event *event_head, int process_node_id , Nodes *nodes_head)
 {
-    Nodes *dest_Node = NULL, *orig_Node = NULL;
+   
+    Nodes *orig_node = NULL;
+    DestNode *woken_node =NULL;
 
-    dest_Node = searchNodesList(nodes_Head, event->dest_node);//nó de destino da mensagem
-    orig_Node = searchNodesList(nodes_Head, event->origin_node);//nó de origem da mensagem
+    //Primeiro, encontrar o nó que queremos processar
+    orig_node=searchNodesList(nodes_head,process_node_id);
 
-    updateDestToNode(dest_Node, event->message);
+    //Segundo, processar o evento -> Atualizar a tabela de encaminhamento
+    woken_node = updateDestToNode(orig_node, event_head->message, event_head->type);
+    if (woken_node != NULL)
+        event_head = RepAnnouncement(event_head, orig_node, woken_node);
 
+    return;
 }
+
 
 Event *popEvent(Event *event_head)
 {
