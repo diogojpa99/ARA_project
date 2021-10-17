@@ -9,16 +9,22 @@ int Dn = 0;
 //AnnounceNode: Para cada ligação (adjacente), vai se criar um novo evento.
 Event *announceNode(Event *event_head, Nodes *woken_node){
 
-    Adj *auxT;
+    Adj *neighbour;
+    int wake_message[3] = {woken_node->id,woken_node->id,0};
+
+    /*  Antes de se anunciar aos seus vizinhos, o nó que acabou de acordar coloca na sua tabela de 
+        encaminhamento que consegue chegar a ele próprio com "custo" zero. */
+    woken_node->destHead=updateDestToNode(woken_node, wake_message, 0);
 
     if(woken_node == NULL){
         return event_head;
     }else{
-        auxT = woken_node->adjHead;
-            event_head = createEvent(event_head, woken_node, woken_node->id, auxT, 0);
-        while(auxT->next != NULL){
-            auxT = auxT->next;
-            event_head = createEvent(event_head, woken_node, woken_node->id, auxT, 0);
+        Dn++; // Escolher o primeiro nó para acordar -> Dn=0 ; Ao anunciar o primeiro nó que acordou -> Dn=1
+        neighbour = woken_node->adjHead;
+            event_head = createEvent(event_head, woken_node, woken_node->id, neighbour, 0);
+        while(neighbour->next != NULL){
+            neighbour = neighbour->next;
+            event_head = createEvent(event_head, woken_node, woken_node->id, neighbour, 0);
         }
     }
     return event_head;
@@ -35,21 +41,22 @@ source_node -> Nó que foi eleito para chegar a um dado destino
 
 Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *source_node){
 
-    Adj *neighbor;
+    Adj *neighbour;
 
     if(node_orig == NULL){
         return eventHead;
     }else{
-         neighbor= node_orig->adjHead;
-            if( source_node->type == 1 || neighbor->type == 1){
-                printf("\n\n45: neihbour_id=%d\n", neighbor->id);
-                eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbor, source_node->cost);
+        Dn=eventHead->An; //Sempre que criamos um novo evento, o "ponto de partida" (Dn) é igual ao tempo de chegada anterior : D_n+1=An
+        neighbour= node_orig->adjHead;
+            if( source_node->type == 1 || neighbour->type == 1){
+                printf("\n-- 45 -- : neihbour_id=%d\n", neighbour->id);
+                eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
             }
-        while(neighbor->next != NULL){
-            neighbor = neighbor->next;
-            if( source_node->type == 1 || neighbor->type == 1){
-                eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbor, source_node->cost);
-                printf("\n\n46: neihbour_id=%d\n", neighbor->id);
+        while(neighbour->next != NULL){
+            neighbour = neighbour->next;
+            if( source_node->type == 1 || neighbour->type == 1){
+                eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
+                printf("-- 46 -- : neihbour_id=%d\n", neighbour->id);
             }
         }
     }
@@ -93,7 +100,7 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     new_event->message[1] = woken_node_id;
     new_event->message[2] = cost; 
 
-    printf("\n\n96: New Event: time=%d | out_node=%d | in_node=%d | type=%d | message: %d %d %d\n\n",new_event->An,new_event->origin_node,new_event->dest_node,new_event->type, new_event->message[0], new_event->message[1], new_event->message[2]);
+    printf("\n-- 96 --: New Event: time=%d | out_node=%d | in_node=%d | type=%d | message: %d %d %d\n",new_event->An,new_event->origin_node,new_event->dest_node,new_event->type, new_event->message[0], new_event->message[1], new_event->message[2]);
 
     return event_head = insertEventOrdered(event_head, new_event);
 }
