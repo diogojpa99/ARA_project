@@ -10,7 +10,7 @@ int Dn = 0;
 Event *announceNode(Event *event_head, Nodes *woken_node){
 
     Adj *neighbour;
-    int wake_message[3] = {woken_node->id,woken_node->id,0};
+    int wake_message[3] = {woken_node->id,woken_node->id,-1};
 
     /*  Antes de se anunciar aos seus vizinhos, o nó que acabou de acordar coloca na sua tabela de 
         encaminhamento que consegue chegar a ele próprio com "custo" zero. */
@@ -49,14 +49,14 @@ Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *source_node
         Dn=eventHead->An; //Sempre que criamos um novo evento, o "ponto de partida" (Dn) é igual ao tempo de chegada anterior : D_n+1=An
         neighbour= node_orig->adjHead;
             if( source_node->type == 1 || neighbour->type == 1){
-                printf("\n-- 45 -- : neihbour_id=%d\n", neighbour->id);
+                //printf("\n-- 45 -- : neihbour_id=%d\n", neighbour->id);
                 eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
             }
         while(neighbour->next != NULL){
             neighbour = neighbour->next;
             if( source_node->type == 1 || neighbour->type == 1){
                 eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
-                printf("-- 46 -- : neihbour_id=%d\n", neighbour->id);
+                //printf("-- 46 -- : neihbour_id=%d\n", neighbour->id);
             }
         }
     }
@@ -100,7 +100,7 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     new_event->message[1] = woken_node_id;
     new_event->message[2] = cost; 
 
-    printf("\n-- 96 --: New Event: time=%d | out_node=%d | in_node=%d | type=%d | message: %d %d %d\n",new_event->An,new_event->origin_node,new_event->dest_node,new_event->type, new_event->message[0], new_event->message[1], new_event->message[2]);
+    //printf("\n-- 96 --: New Event: time=%d | out_node=%d | in_node=%d | type=%d | message: %d %d %d\n",new_event->An,new_event->origin_node,new_event->dest_node,new_event->type, new_event->message[0], new_event->message[1], new_event->message[2]);
 
     return event_head = insertEventOrdered(event_head, new_event);
 }
@@ -165,7 +165,7 @@ void processCalendar(Event *event_head, Nodes *woken_node, Nodes *nodes_head)
     event_head = announceNode(event_head, woken_node); //First wake up the node, create the respective events and insert them in the calendar
     
     while(event_head != NULL){
-        printEvents(event_head);
+        //printEvents(event_head);
         event_head = processEvent(event_head, event_head->dest_node, nodes_head);
         event_head = popEvent(event_head);        
     }
@@ -185,16 +185,16 @@ Event *processEvent(Event *event_head, int process_node_id , Nodes *nodes_head)
 
     //Primeiro, encontrar o nó que queremos processar
     orig_node = searchNodesList(nodes_head,process_node_id);
-    printf("\nNode that is being currently processed: %d]\n", orig_node->id);
+    //printf("\nNode that is being currently processed: %d\n", orig_node->id);
 
     //Segundo, processar o evento -> Atualizar a tabela de encaminhamento
     source_node = updateDestToNode(orig_node, event_head->message, event_head->type);
     if (source_node != NULL){
-        printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Relação comercial entre mim e o meu vizinho: %d]\n", orig_node->id,source_node->dest_id, source_node->neighbour_id, source_node->type); 
+        //printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d ]\n", orig_node->id,source_node->dest_id, source_node->neighbour_id, source_node->type); 
         event_head = RepAnnouncement(event_head, orig_node, source_node);
     }
     else{
-        printf("Nó não atualizou a sua tabela de encaminhamento -> Logo não deve anunciar nada, logo não criamos eventos\n");
+        //printf("Nó não atualizou a sua tabela de encaminhamento -> Logo não deve anunciar nada, logo não criamos eventos\n");
     }
 
     return event_head;

@@ -27,7 +27,7 @@ int main()
     
     /******************************************** Simulation ***********************************************/
 
-    printf("The simulation has started!\n");
+    printf("\n\n ------------ The simulation has started ------------ \n");
     
     simulation(nodes_Head, event_Head);
 

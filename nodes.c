@@ -138,7 +138,7 @@ void Print_List_of_Adjacencies(Nodes *listHead){
         return;
     }else{
         for(nodes_auxT = listHead; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
-            printf("[%d]->", nodes_auxT->id);   fflush(stdout);
+            printf("\n[%d]->", nodes_auxT->id);   fflush(stdout);
             for(adj_auxT = nodes_auxT->adjHead; adj_auxT != NULL; adj_auxT = adj_auxT->next) {
                 printf("[id:%d|type:%d]->", adj_auxT->id, adj_auxT->type);  fflush(stdout);
             }
@@ -219,7 +219,7 @@ DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int c
         }
     new_dest->neighbour_id = neigbour_id;
     new_dest->dest_id = dest_id;
-    new_dest->cost = cost + 1;;
+    new_dest->cost = cost + 1;
     new_dest->type = type;
     new_dest->next_dest = NULL;
 
@@ -244,9 +244,9 @@ void Print_List_of_Destinations(Nodes *nodes_Head)
         return;
     }else{
         for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
-            printf("[%d]->", nodes_auxT->id);   fflush(stdout);
+            printf("\n[%d]->", nodes_auxT->id);   fflush(stdout);
             for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
-                printf("[dest_id:%d|neihbour_id:%d|type:%d]->", dest_auxT->dest_id,dest_auxT->neighbour_id, dest_auxT->type);  fflush(stdout);
+                printf("[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->neighbour_id, dest_auxT->type,dest_auxT->cost);  fflush(stdout);
             }
             printf("NULL\n");
         }
