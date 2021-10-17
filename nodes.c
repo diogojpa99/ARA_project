@@ -254,3 +254,36 @@ void Print_List_of_Destinations(Nodes *nodes_Head)
 
     return;
 }
+
+void freeGraphNodes(Nodes *nodes_head)
+{
+    Nodes *auxH = NULL; 
+    Adj *aux_adj = NULL;
+    DestNode *aux_dest = NULL;
+
+    if(nodes_head == NULL)
+    {
+        return;
+    }else{
+        while (nodes_head != NULL)
+        {
+            auxH = nodes_head;
+            nodes_head = nodes_head->next;
+
+            while(auxH->adjHead != NULL)
+            {
+                aux_adj = auxH->adjHead;
+                auxH->adjHead = auxH->adjHead->next; 
+                free(aux_adj);
+            }
+            while(auxH->destHead != NULL)
+            {
+                aux_dest = auxH->destHead;
+                auxH->destHead = auxH->destHead->next_dest; 
+                free(aux_dest);
+            }
+        }
+        free(auxH);
+
+    }
+}

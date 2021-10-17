@@ -8,8 +8,8 @@ int main()
 {
     FILE *fp;
     int tail, head, type;
-    Nodes *nodes_Head = NULL;
-    Event *event_Head = NULL;
+    Nodes *nodes_head = NULL;
+    Event *event_head = NULL;
     
 
     fp = fopen("grafo2.txt","r");
@@ -21,17 +21,17 @@ int main()
     }
 
     while( fscanf(fp, "%d %d %d\n", &tail, &head, &type) != EOF ){
-        nodes_Head = createGraph(nodes_Head, tail, head, type);
+        nodes_head = createGraph(nodes_head, tail, head, type);
     }
-    Print_List_of_Adjacencies(nodes_Head);
+    Print_List_of_Adjacencies(nodes_head);
     
     /******************************************** Simulation ***********************************************/
 
     printf("\n\n ------------ The simulation has started ------------ \n");
     
-    simulation(nodes_Head, event_Head);
+    simulation(nodes_head, event_head);
 
-    Print_List_of_Destinations(nodes_Head);
+    Print_List_of_Destinations(nodes_head);
 
     
     
@@ -50,7 +50,7 @@ int main()
     **********************************************************************************************************/
 
     fclose(fp);
-    //freeGraphNodes(nodesHead);
+    freeGraphNodes(nodes_head);
     //freeEventsNodes(eventHead);
     return 0;
 }
