@@ -16,9 +16,11 @@ void simulation(Nodes *nodes_head, Event *event_head){
         return;
     }else{
         auxT = nodes_head;
+        printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         processCalendar(event_head, auxT, nodes_head);
         while( auxT->next != NULL){
             auxT = auxT->next;
+            printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             processCalendar(event_head, auxT, nodes_head);
         }
     }
