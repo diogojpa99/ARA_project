@@ -39,6 +39,8 @@ Nodes *createNode(Nodes *listHead, int tail){
     newNode->adjHead = NULL;
     newNode->destHead = NULL;
 
+    //newNode->destHead = createDestiny(newNode->destHead, newNode->id, newNode->id, 0, 0);
+
     return newNode;
 }
 
@@ -153,7 +155,7 @@ updateDestToNode: Se a tabela de encaminhamento de um dado nó for alterada (ret
 aos seus vizinhos, logo é necessário criar novos eventos. Caso a tabela de encaminhamento não altere (retorna-se 0), o nó não
 anuncia nada.
 */
-    DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
+DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
 {
     DestNode *current_dest = NULL;
 
@@ -231,4 +233,24 @@ DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int c
         dest_head = new_dest;
     }
     return dest_head;
+}
+
+void Print_List_of_Destinations(Nodes *nodes_Head)
+{
+    Nodes *nodes_auxT;
+    DestNode *dest_auxT;
+
+    if(nodes_Head==NULL){
+        return;
+    }else{
+        for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
+            printf("[%d]->", nodes_auxT->id);   fflush(stdout);
+            for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
+                printf("[dest_id:%d|neihbour_id:%d|type:%d]->", dest_auxT->dest_id,dest_auxT->neighbour_id, dest_auxT->type);  fflush(stdout);
+            }
+            printf("NULL\n");
+        }
+    }
+
+    return;
 }

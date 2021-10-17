@@ -1,7 +1,7 @@
-#include "readFile.h"
+#include "simulation.h"
 #include "calendar.h"
 #include "nodes.h"
-#include "simulation.h"
+#include "readFile.h"
 
 /**********************************     Simulation      *****************************************/
 /* Vamos acordar cada nó da lista de nós, separadamente. Ou seja, primeiro acordamos um nó x e  */

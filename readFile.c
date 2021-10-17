@@ -10,8 +10,9 @@ int main()
     int tail, head, type;
     Nodes *nodes_Head = NULL;
     Event *event_Head = NULL;
+    
 
-    fp = fopen("grafo1.txt","r");
+    fp = fopen("grafo2.txt","r");
     srand(time(0));
 
     if(fp==NULL){
@@ -30,8 +31,10 @@ int main()
     
     simulation(nodes_Head, event_Head);
 
+    Print_List_of_Destinations(nodes_Head);
 
-    printEvents(event_Head);
+    
+    
 
     /**************************************** Interactive Mode ********************************************
         printf("Insert the id of the node you want to wake: "); fflush(stdout);//prompt

@@ -7,11 +7,12 @@
 #include <math.h>
 #include <time.h>
 
+
+
 #define MAX_ID 65535
 
 enum event_type{annouce, rep_annouce};
 
-int Dn = 0;
 
 typedef struct _Event{
     int An; //Tempo de chegada ao destino do evento, ou seja, tempo em que esse evento vai ser processado
