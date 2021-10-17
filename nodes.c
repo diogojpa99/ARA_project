@@ -204,6 +204,12 @@ DestNode *searchDestiny(DestNode *dest_head, int dest_id)
     return NULL;
 }
 
+
+/*
+neighbour_id - vizinho por onde conseguimos chegar a um dado destino
+dest_id - nó de destino
+type ralaçao do nó atual para o nó com o neighbour_id
+*/
 DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost, int type)
 {
     DestNode *new_dest = NULL;

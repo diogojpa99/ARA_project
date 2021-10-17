@@ -70,6 +70,9 @@ list_head - cabeça da lista de eventos*/
 Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *adj, int cost) 
 {
     Event *new_event = NULL;
+    time_t t;
+    srand((unsigned) time(&t));
+    
     int Sn = 0;
    
     if((new_event = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
