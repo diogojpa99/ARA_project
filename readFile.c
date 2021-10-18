@@ -12,7 +12,7 @@ int main()
     Event *event_head = NULL;
     
 
-    fp = fopen("grafo2.txt","r");
+    fp = fopen("grafo3.txt","r");
     srand(time(0));
 
     if(fp==NULL){
