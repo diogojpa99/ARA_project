@@ -183,15 +183,21 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
         //O destino já existe e temos de verificar se vale apena mudar caso a estimativa melhore
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATENÇÃO ÀS RELAÇÕES COMERCIAIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if( type < current_dest->type){ //1<2<3
+            printf("\nAlteracao pela relacao comercial\n");
             current_dest->neighbour_id = message[0];
             current_dest->type = type;
-            current_dest->cost = message[2];
+            current_dest->cost = message[2] + 1;
             return current_dest;
-        }
-        else if( type == current_dest->type){ //Se a relação comercial for a mesma então vemos pelo custo
-            if(message[2] < current_dest->cost){
+        }else if( type == current_dest->type){ //Se a relação comercial for a mesma então vemos pelo custo
+            printf("\nAlteracao pelo custo\n");
+            if(message[2] + 1 < current_dest->cost){
                 current_dest->neighbour_id = message[0];
-                current_dest->cost = message[2];
+                current_dest->cost = message[2] + 1;
+                return current_dest;
+            }else if(current_dest->neighbour_id == message[0]){
+                printf("\nAlteracao forcada\n");
+                current_dest->neighbour_id = message[0];
+                current_dest->cost = message[2] + 1;
                 return current_dest;
             }
         }

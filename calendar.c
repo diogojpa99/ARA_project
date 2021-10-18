@@ -10,11 +10,14 @@ int Dn = 0;
 Event *announceNode(Event *event_head, Nodes *woken_node){
 
     Adj *neighbour;
-    int wake_message[3] = {woken_node->id,woken_node->id,-1};
+    int wake_message[3] = {woken_node->id, woken_node->id, -1};
 
     /*  Antes de se anunciar aos seus vizinhos, o nó que acabou de acordar coloca na sua tabela de 
         encaminhamento que consegue chegar a ele próprio com "custo" zero. */
-    woken_node->destHead=updateDestToNode(woken_node, wake_message, 0);
+    woken_node->destHead = updateDestToNode(woken_node, wake_message, 0);
+    
+    
+    Print_List_of_Destinations(woken_node);
 
     if(woken_node == NULL){
         return event_head;
@@ -46,17 +49,18 @@ Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *source_node
     if(node_orig == NULL){
         return eventHead;
     }else{
-        Dn=eventHead->An; //Sempre que criamos um novo evento, o "ponto de partida" (Dn) é igual ao tempo de chegada anterior : D_n+1=An
+        Dn = eventHead->An; //Sempre que criamos um novo evento, o "ponto de partida" (Dn) é igual ao tempo de chegada anterior : D_n+1=An
+        
         neighbour= node_orig->adjHead;
             if( source_node->type == 1 || neighbour->type == 1){
-                printf("\n-- 45 -- : neihbour_id=%d\n", neighbour->id);
+                printf("\n-- 45 -- : neihbour_id = %d\n", neighbour->id);
                 eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
             }
         while(neighbour->next != NULL){
             neighbour = neighbour->next;
             if( source_node->type == 1 || neighbour->type == 1){
                 eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
-                printf("-- 46 -- : neihbour_id=%d\n", neighbour->id);
+                printf("-- 46 -- : neihbour_id = %d\n", neighbour->id);
             }
         }
     }
@@ -193,7 +197,7 @@ Event *processEvent(Event *event_head, int process_node_id , Nodes *nodes_head)
     //Segundo, processar o evento -> Atualizar a tabela de encaminhamento
     source_node = updateDestToNode(orig_node, event_head->message, event_head->type);
     if (source_node != NULL){
-        printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d ]\n", orig_node->id,source_node->dest_id, source_node->neighbour_id, source_node->type); 
+        printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d | Custo: %d]\n", orig_node->id,source_node->dest_id, source_node->neighbour_id, source_node->type, source_node->cost); 
         event_head = RepAnnouncement(event_head, orig_node, source_node);
     }
     else{
