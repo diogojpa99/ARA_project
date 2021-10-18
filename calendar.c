@@ -73,14 +73,13 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     time_t t;
     srand((unsigned) time(&t));
     
-    int Sn = 0;
+    int Sn = 1 + rand()%3;
    
     if((new_event = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
         printf("Memory is full. Couldn't register request.\n");
 		return event_head;
     }
-
-    Sn = 1 + rand()%3;
+    
     new_event->An = Dn + Sn;
     if (new_event->An < adj->An) new_event->An=adj->An;  //Tratar da fila de espera de cada ligação    
     new_event->origin_node = node_orig->id; // nó que está a enviar a sms

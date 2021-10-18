@@ -129,6 +129,21 @@ Nodes *searchNodesList(Nodes *list_Head, int id){
     return NULL;
 }
 
+void Print_List_of_Nodes(Nodes *listHead){
+    
+    Nodes *nodes_auxT;
+
+    if(listHead==NULL){
+        return;
+    }else{
+        for(nodes_auxT = listHead; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
+            printf("\n\t%d", nodes_auxT->id);   fflush(stdout);
+        }
+    }
+
+    return;
+}
+
 void Print_List_of_Adjacencies(Nodes *listHead){
     
     Nodes *nodes_auxT;
@@ -293,3 +308,4 @@ void freeGraphNodes(Nodes *nodes_head)
 
     }
 }
+

@@ -6,7 +6,9 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-
+#include <getopt.h>
+#include <stdbool.h>
+#include <unistd.h>
 
 
 #define MAX_ID 65535
@@ -46,6 +48,8 @@ typedef struct _Nodes{
     DestNode *destHead;
     struct _Nodes *next;
 } Nodes;
+
+void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, Nodes *nodes_head);
 
 
 #endif //READFILE INCLUDED

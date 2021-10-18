@@ -20,6 +20,8 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode, int id);
 
 Nodes *searchNodesList(Nodes *listHead, int id);
 
+void Print_List_of_Nodes(Nodes *nodes_head);
+
 void Print_List_of_Adjacencies(Nodes *list_Head);
 
 DestNode *updateDestToNode(Nodes *process_node, int *message, int type);
