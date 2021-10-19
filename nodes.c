@@ -182,6 +182,7 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
     }else{
         //O destino já existe e temos de verificar se vale apena mudar caso a estimativa melhore
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATENÇÃO ÀS RELAÇÕES COMERCIAIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         if( type < current_dest->type){ //1<2<3
             printf("\nAlteracao pela relacao comercial\n");
             current_dest->neighbour_id = message[0];
@@ -239,7 +240,6 @@ DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int c
     //Se é o primeiro destino então criamos logo dois destinos:
     // - destino para o nó adjacente de onde recebemos a mensagem
     // - destino para o nó anunciado na mensagem
-    //
     if((new_dest = (DestNode*) calloc(1, sizeof(DestNode))) == NULL){   
         printf("Error: Could not add destiny");
         return NULL;
