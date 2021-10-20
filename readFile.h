@@ -49,6 +49,14 @@ typedef struct _Nodes{
     struct _Nodes *next;
 } Nodes;
 
+typedef struct _Queue{
+    int node_id;
+    int type;
+    int cost;
+    DestNode *dest;
+    Nodes *node;
+} Queue;
+
 void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, Nodes *nodes_head);
 
 
