@@ -57,6 +57,14 @@ typedef struct _Nodes{
     struct _Nodes *next;
 } Nodes;
 
+typedef struct _Queue{
+    int node_id;
+    int type;
+    int cost;
+    DestNode *dest;
+    Nodes *node;
+} Queue;
+
 
 
 
