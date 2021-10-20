@@ -1,10 +1,12 @@
-#include "readFile.h"
-#include "nodes.h"
-#include "simulation.h"
+
 #include "calendar.h"
 
 
-int Dn = 0;
+#include "nodes.h"
+#include "simulation.h"
+
+
+extern int Dn;
 
 //AnnounceNode: Para cada ligação (adjacente), vai se criar um novo evento.
 Event *announceNode(Event *event_head, Nodes *woken_node){

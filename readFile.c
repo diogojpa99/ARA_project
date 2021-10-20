@@ -1,9 +1,10 @@
 #include "readFile.h"
+
 #include "calendar.h"
 #include "nodes.h"
 #include "simulation.h"
 
-
+int Dn = 0;
 int main(int argc, char **argv)
 {
     FILE *fp;

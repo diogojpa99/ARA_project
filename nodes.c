@@ -1,6 +1,6 @@
 #include "nodes.h"
+
 #include "calendar.h"
-#include "readFile.h"
 #include "simulation.h"
 
 /** createNode: Creates a new node in the Nodes List **/
@@ -88,9 +88,9 @@ Nodes *insertNode(Nodes *listHead, Nodes *newNode, int id){ //Insert the new Nod
 
     /** Inserting the new node in the end of the nodes list and returning the list head**/
     if(listHead == NULL){
-        listHead=newNode;
+        listHead = newNode;
     }else{
-        auxT=listHead;
+        auxT = listHead;
         while(auxT->next != NULL){
             if( auxT->id == id){
                 return listHead;
