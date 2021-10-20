@@ -174,6 +174,9 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
 {
     DestNode *current_dest = NULL;
     Neighbours *chosen_neighbour = NULL;
+    Neighbours *a_neighour = NULL;
+
+    
 
     current_dest = searchDestiny(process_node->destHead, message[1]);
 
@@ -185,52 +188,58 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
         chosen_neighbour = createNeighbourToDestiny(message, type);
         //Inserir ordenadamente o novo vizinho na lista de vizinhos que conseguem chegar ao destino
         process_node->destHead->neighbours_head = insertNeighbourtOrdered(process_node->destHead->neighbours_head, chosen_neighbour);  
+
         return process_node->destHead;
     }else{
         //O destino já existe e temos de verificar se vale apena mudar caso a estimativa melhore
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATENÇÃO ÀS RELAÇÕES COMERCIAIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         //encontrar o vizinho pelo qual conseguimos chegar a um dado destino
-        chosen_neighbour = searchForNeighbourToDestiny(current_dest->neighbours_head, message[0]);
-        if(chosen_neighbour == NULL){//se não o encontrámos temos que criar
-            chosen_neighbour = createNeighbourToDestiny(message, type);
-            current_dest->neighbours_head = insertNeighbourtOrdered(current_dest->neighbours_head, chosen_neighbour);//inserimos ordenadamente para que na cabeça da lista de vizinhos que chegam a um dado destino ficar sempre o que tem melhor custo
+        a_neighour = searchForNeighbourToDestiny(current_dest->neighbours_head, message[0], -1);
+        if(a_neighour == NULL){//se não o encontrámos temos que criar
+            a_neighour = createNeighbourToDestiny(message, type);
+            current_dest->neighbours_head = insertNeighbourtOrdered(current_dest->neighbours_head, a_neighour);//inserimos ordenadamente para que na cabeça da lista de vizinhos que chegam a um dado destino ficar sempre o que tem melhor custo
         }else{//se o encontrámos temos que o atualizar com o novo custo e depois reordenar a lista de vizinhos que chegam a um dado destino
-            chosen_neighbour->neighbour_estim_cost = message[2] + 1;
+            a_neighour->neighbour_estim_cost = message[2] + 1;
             //printf("NEIGHBOURS HEAD: %d", current_dest->neighbours_head->neighbour_id);
             current_dest->neighbours_head = orderNeighboursToDestinyAscendent(current_dest->neighbours_head);
             
         }
 
+        if(process_node->id != message[1]) updateEstimateToDestiny(current_dest); // apenas atualizamos o destino se o destino não formos nós próprios
+
         //print list of neighbours to that destiny
         printf("\n\t\tPRINTING DESTINIES OF NODE %d\n", process_node->id);
         printDestiny(process_node->destHead);
 
-        //Atualizar a informação que temos para chegar a esse destino
-        //updateDestiny(current_dest, message, type); //fazer esta função
-
-        if( type < current_dest->type){ //1<2<3
-            printf("\nAlteracao pela relacao comercial\n");
-            current_dest->chosen_neighbour_id = message[0];
-            current_dest->type = type;
-            current_dest->cost = message[2] + 1;
-            return current_dest;
-        }else if( type == current_dest->type){ //Se a relação comercial for a mesma então vemos pelo custo
-            printf("\nAlteracao pelo custo\n");
-            if(message[2] + 1 < current_dest->cost){
-                current_dest->chosen_neighbour_id = message[0];
-                current_dest->cost = message[2] + 1;
-                return current_dest;
-            }else if(current_dest->chosen_neighbour_id == message[0]){
-                printf("\nAlteracao forcada\n");
-                current_dest->chosen_neighbour_id = message[0];
-                current_dest->cost = message[2] + 1;
-                return current_dest;
-            }
-        }
     } 
 
     return NULL;  //Se nada mudar, então não se anuncia nada
+}
+
+void updateEstimateToDestiny(DestNode *current_dest)
+{
+    Neighbours *aux = NULL;
+    //encontrar o melhor vizinho numa lista ordenada por custos
+    //devemos dr prioridade aos clientes, depois aos pares e depois aos fornecedores
+    if((aux = searchForNeighbourToDestiny(current_dest->neighbours_head, -1, 1)) != NULL){//Encontrámos um vizinho que é nosso cliente
+        current_dest->chosen_neighbour_id = aux->neighbour_id;
+        current_dest->cost = aux->neighbour_estim_cost;
+        current_dest->type = aux->type;
+        return;
+        
+    }else if((aux = searchForNeighbourToDestiny(current_dest->neighbours_head, -1, 2)) != NULL){
+        current_dest->chosen_neighbour_id = aux->neighbour_id;
+        current_dest->cost = aux->neighbour_estim_cost;
+        current_dest->type = aux->type;
+        return;
+    }else if((aux = searchForNeighbourToDestiny(current_dest->neighbours_head, -1, 3)) != NULL){
+        current_dest->chosen_neighbour_id = aux->neighbour_id;
+        current_dest->cost = aux->neighbour_estim_cost;
+        current_dest->type = aux->type;
+        return;
+    }
+    return;
 }
 
 void printDestiny(DestNode *destiny_head)
@@ -297,7 +306,7 @@ Neighbours *insertNeighbourtOrdered(Neighbours *neighbours_head, Neighbours *nei
     return neighbours_head;
 }
 
-Neighbours *searchForNeighbourToDestiny(Neighbours *neighbours_head, int neighbour_id)
+Neighbours *searchForNeighbourToDestiny(Neighbours *neighbours_head, int neighbour_id, int type)
 {
     Neighbours *auxT;
 
@@ -305,11 +314,21 @@ Neighbours *searchForNeighbourToDestiny(Neighbours *neighbours_head, int neighbo
         return NULL;
     }else{     
         auxT = neighbours_head;
-        if(auxT->neighbour_id == neighbour_id)
-            return auxT;
-        while(auxT->next_neighbour != NULL){
-            auxT = auxT->next_neighbour;
-            if( auxT->neighbour_id == neighbour_id ) return auxT;
+        if(type == -1){//Se type == -1 então estamos à procura de um vizinho pelo id
+            if(auxT->neighbour_id == neighbour_id)
+                return auxT;
+            while(auxT->next_neighbour != NULL){
+                auxT = auxT->next_neighbour;
+                if( auxT->neighbour_id == neighbour_id ) return auxT;
+            }
+        }else{//Se type != -1 estamos à procura de um vizinho pelo tipo de ralçaõ comercial
+            if(auxT->type == type)
+                return auxT;
+            while(auxT->next_neighbour != NULL){
+                auxT = auxT->next_neighbour;
+                if( auxT->type == type ) return auxT;
+            }
+
         }
     }
     //Se não se tiver encontrado o destino 

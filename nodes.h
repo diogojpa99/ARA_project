@@ -39,12 +39,14 @@ Neighbours *createNeighbourToDestiny(int *message, int type);
 
 Neighbours *insertNeighbourtOrdered(Neighbours *neighbours_head, Neighbours *neighbour_to_insert);
 
-Neighbours *searchForNeighbourToDestiny(Neighbours *neighbours_head, int neighbour_id);
+Neighbours *searchForNeighbourToDestiny(Neighbours *neighbours_head, int neighbour_id, int type);
 
 Neighbours *orderNeighboursToDestinyAscendent(Neighbours *neighbours_head);
 
 Neighbours *switch_neighbours(Neighbours *left, Neighbours *right);
 
 void printDestiny(DestNode *destiny_head);
+
+void updateEstimateToDestiny(DestNode *current_dest);
 
 #endif //NODES INCLUDED
