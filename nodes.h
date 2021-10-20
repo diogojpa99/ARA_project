@@ -34,4 +34,17 @@ void Print_List_of_Destinations(Nodes *nodes_Head);
 
 void freeGraphNodes(Nodes *nodes_head);
 
+
+Neighbours *createNeighbourToDestiny(int *message, int type);
+
+Neighbours *insertNeighbourtOrdered(Neighbours *neighbours_head, Neighbours *neighbour_to_insert);
+
+Neighbours *searchForNeighbourToDestiny(Neighbours *neighbours_head, int neighbour_id);
+
+Neighbours *orderNeighboursToDestinyAscendent(Neighbours *neighbours_head);
+
+Neighbours *switch_neighbours(Neighbours *left, Neighbours *right);
+
+void printDestiny(DestNode *destiny_head);
+
 #endif //NODES INCLUDED
