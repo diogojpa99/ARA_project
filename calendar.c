@@ -24,7 +24,14 @@ Event *announceNode(Event *event_head, Nodes *woken_node){
     if(woken_node == NULL){
         return event_head;
     }else{
-        Dn++; // Escolher o primeiro nó para acordar -> Dn=0 ; Ao anunciar o primeiro nó que acordou -> Dn=1
+        
+        
+        
+        //Dn++; // Escolher o primeiro nó para acordar -> Dn=0 ; Ao anunciar o primeiro nó que acordou -> Dn=1
+        
+        
+        
+        
         neighbour = woken_node->adjHead;
             event_head = createEvent(event_head, woken_node, woken_node->id, neighbour, 0);
         while(neighbour->next != NULL){
@@ -44,29 +51,42 @@ node_orig -> nó que vai enviar a mensagem aos seus adjacentes
 source_node -> Nó que foi eleito para chegar a um dado destino
 */
 
-Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *source_node){
+/************************************************************
+Event *RepAnnouncement(Event *eventHead, Nodes *node_orig, DestNode *source_node)
+
+    -Descricao: Recria o anúncio recebido por um nó para todos os seus adjacentes tendo em conta as relações comerciais
+
+    -Argumentos:*event_head - cabeça da lista do calendário
+                *node_orig - nó que recebeu a mensagem e que a vai recriar e enviar para os seus adjacentes
+                *source_node - nó que criou o anúncio original
+
+    -Retorno:   cabeça da lista de calendário
+
+************************************************************/
+
+Event *RepAnnouncement(Event *event_head, Nodes *node_orig, DestNode *source_node){
 
     Adj *neighbour;
 
     if(node_orig == NULL){
-        return eventHead;
+        return event_head;
     }else{
-        Dn = eventHead->An; //Sempre que criamos um novo evento, o "ponto de partida" (Dn) é igual ao tempo de chegada anterior : D_n+1=An
         
-        neighbour= node_orig->adjHead;
+        
+        neighbour = node_orig->adjHead;
             if( source_node->type == 1 || neighbour->type == 1){
                 printf("\n-- 45 -- : neihbour_id = %d\n", neighbour->id);
-                eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
+                event_head = createEvent(event_head, node_orig, source_node->dest_id, neighbour, source_node->cost);
             }
         while(neighbour->next != NULL){
             neighbour = neighbour->next;
             if( source_node->type == 1 || neighbour->type == 1){
-                eventHead = createEvent(eventHead, node_orig, source_node->dest_id, neighbour, source_node->cost);
+                event_head = createEvent(event_head, node_orig, source_node->dest_id, neighbour, source_node->cost);
                 printf("-- 46 -- : neihbour_id = %d\n", neighbour->id);
             }
         }
     }
-    return eventHead;
+    return event_head;
 }
 
 //Funcao que cria um novo evento para ser inserido no calendario
@@ -80,14 +100,15 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     srand((unsigned) time(&t));
     
     int Sn = 1 + rand()%3;
+    printf("\n\nSN = %d", Sn);
    
     if((new_event = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
         printf("Memory is full. Couldn't register request.\n");
 		return event_head;
     }
     
-    new_event->An = Dn + Sn;
-    if (new_event->An < adj->An) new_event->An=adj->An;  //Tratar da fila de espera de cada ligação    
+    new_event->An = Dn + Sn;//o instante do evento quee estamos a criar é o instante do calendário mais a tempo aleatório com a componente fixa de 1
+    if (new_event->An < adj->An) new_event->An = adj->An;  //Tratar da fila de espera de cada ligação    
     new_event->origin_node = node_orig->id; // nó que está a enviar a sms
     new_event->dest_node = adj->id; // nó a quem se destina a sms
 
@@ -193,8 +214,10 @@ Event *processEvent(Event *event_head, int process_node_id , Nodes *nodes_head)
     DestNode *source_node = NULL;
 
     //Primeiro, encontrar o nó que queremos processar
-    orig_node = searchNodesList(nodes_head,process_node_id);
+    orig_node = searchNodesList(nodes_head, process_node_id);
     printf("\nNode that is being currently processed: %d\n", orig_node->id);
+    Dn = event_head->An; //O instante do calendário é o instante do evento que estamos a processar
+    printf("\n\nTIME - %d\n\n", Dn);
 
     //Segundo, processar o evento -> Atualizar a tabela de encaminhamento
     source_node = updateDestToNode(orig_node, event_head->message, event_head->type);
