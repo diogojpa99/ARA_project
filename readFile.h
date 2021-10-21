@@ -32,6 +32,7 @@ typedef struct _Adj{
     int id, neighbor, type, An; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
     char message[6];
     struct _Adj *next;
+    struct _Nodes *node_pointer;
 } Adj;
 
 typedef struct _DestinyNode{
@@ -55,6 +56,7 @@ typedef struct _Queue{
     int cost;
     DestNode *dest;
     Nodes *node;
+    struct _Nodes *next;
 } Queue;
 
 void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, Nodes *nodes_head);

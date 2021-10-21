@@ -5,6 +5,8 @@
 #include "calendar.h"
 #include "simulation.h"
 
+#define INFINITY 1000000
+
 
 //Nodes
 
@@ -33,5 +35,9 @@ DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int c
 void Print_List_of_Destinations(Nodes *nodes_Head);
 
 void freeGraphNodes(Nodes *nodes_head);
+
+Nodes *AdjToNode(Nodes *listHead);
+
+DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node);
 
 #endif //NODES INCLUDED

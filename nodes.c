@@ -3,6 +3,7 @@
 #include "readFile.h"
 #include "simulation.h"
 
+
 /** createNode: Creates a new node in the Nodes List **/
 Nodes *createGraph(Nodes *listHead, int tail, int head, int type){ 
 
@@ -155,7 +156,7 @@ void Print_List_of_Adjacencies(Nodes *listHead){
         for(nodes_auxT = listHead; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
             printf("\n[%d]->", nodes_auxT->id);   fflush(stdout);
             for(adj_auxT = nodes_auxT->adjHead; adj_auxT != NULL; adj_auxT = adj_auxT->next) {
-                printf("[id:%d|type:%d]->", adj_auxT->id, adj_auxT->type);  fflush(stdout);
+                printf("[id:%d|type:%d|nodes_list_id:%d]->", adj_auxT->id, adj_auxT->type, adj_auxT->node_pointer->id);  fflush(stdout);
             }
             printf("NULL\n");
         }
@@ -315,3 +316,55 @@ void freeGraphNodes(Nodes *nodes_head)
     }
 }
 
+Nodes *AdjToNode(Nodes *listHead){
+    
+    Nodes *nodes_auxT, *auxT;
+    Adj *adj_auxT;
+
+    if(listHead==NULL){
+        return listHead;
+    }else{
+        for(nodes_auxT = listHead; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
+            for(adj_auxT = nodes_auxT->adjHead; adj_auxT != NULL; adj_auxT = adj_auxT->next) {
+                if(listHead == NULL){
+                    return NULL;
+                }else{     
+                    auxT = listHead;
+                    if(auxT->id == adj_auxT->id)
+                       adj_auxT->node_pointer=auxT;
+                    while(auxT->next !=NULL){
+                        auxT = auxT->next;
+                        if(auxT->id == adj_auxT->id)
+                            adj_auxT->node_pointer=auxT;
+                    }
+                }
+            }
+        }
+    }
+    return listHead;
+}
+
+DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node)
+{
+    DestNode *new_dest = NULL;
+
+    if((new_dest = (DestNode*) calloc(1, sizeof(DestNode))) == NULL){   
+        printf("Error: Could not add destiny");
+        return NULL;
+        }
+
+    new_dest->neighbour_id = INFINITY;
+    new_dest->dest_id = node->id;
+    new_dest->cost = INFINITY;
+    new_dest->type = INFINITY;
+    new_dest->next_dest = NULL;
+
+    if(dest_head == NULL){
+        dest_head = new_dest;
+        dest_head->next_dest = NULL;
+    }else{
+        new_dest->next_dest = dest_head;
+        dest_head = new_dest;
+    }
+    return dest_head;
+}

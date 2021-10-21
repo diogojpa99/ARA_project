@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         }
     }
 
-    Print_List_of_Adjacencies(nodes_head);
+
     
     /******************************************** Simulation ***********************************************/
 
@@ -66,7 +66,9 @@ int main(int argc, char **argv)
 
     /**************************************** Interactive Mode ********************************************/
 
+    nodes_head = AdjToNode(nodes_head);
 
+    Print_List_of_Adjacencies(nodes_head);
 
     fclose(fp);
     freeGraphNodes(nodes_head);
