@@ -24,7 +24,7 @@ void Algorithm(Nodes *nodes_head) {
 
 void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
 
-    Queue *Q_1=NULL,*Q_2=NULL,*Q_3=NULL; //Vão ser heaps ou listas normais ??
+    Queue *Q=NULL,*Q_1=NULL,*Q_2=NULL,*Q_3=NULL; //Vão ser heaps ou listas normais ??
     /* Q_1, Q_2, Q_3 representam as cabeças de cada uma das filas ordenadas */
 
     //Iniciar o Reverse Dijkstra
@@ -35,6 +35,8 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
     
     while ( (Q_1 != NULL) || (Q_2 != NULL) || (Q_3 != NULL)){
         while (Q_1 != NULL){
+            Q=Q_1;
+            Q_1=Q_1->next;
             //retirar o nó que está na cabeça da pilhaS
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
        
@@ -42,20 +44,23 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
             //Relaxation of the link uv
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
             //Vamos processar esse nó criar um elemento e inserir na respetiva pilha 
-            Q_1=Relaxation1(Q_1, &Q_2, &Q_3);
-            printf("ups\n");
+            Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);
             //Depois libertamos a cabeça da pilha atual e metemos a nova cabeça
-            Q_1=RemoveNodeFromQ(Q_1);
+            free(Q);
         }
 
         while (Q_2 != NULL){
-            Q_2=Relaxation2(Q_2, &Q_1,&Q_3);
-            Q_2=RemoveNodeFromQ(Q_2);
+            Q=Q_2;
+            Q_2=Q_2->next;
+            Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);
+            free(Q);
         }
 
         while (Q_3 != NULL){
-            Q_3=Relaxation3(Q_2, &Q_1,&Q_2);
-            Q_3=RemoveNodeFromQ(Q_3);
+            Q=Q_3;
+            Q_3=Q_3->next;
+            Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);  
+            free(Q);
         }
     }
 
@@ -122,12 +127,11 @@ Queue *CreateNewElement(Queue *new_element, Nodes *node){
     return new_element;
 }
 
+/*
 Queue *RemoveNodeFromQ(Queue *Q){
 
     Queue *auxH=NULL;
 
-    if(Q==NULL) return NULL;
-    
     auxH=Q;
     Q=Q->next;
 
@@ -135,10 +139,10 @@ Queue *RemoveNodeFromQ(Queue *Q){
 
     return Q;
 
-}
+}*/
 
 //Relaxação do link uv
-Queue *Relaxation1(Queue *Q, Queue **Q2, Queue **Q3){
+Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3){
 
     Adj *neighbour=NULL;
 
@@ -146,20 +150,18 @@ Queue *Relaxation1(Queue *Q, Queue **Q2, Queue **Q3){
         return Q;
     }else{
         neighbour = Q->node->adjHead;
-        printf("node:%d neighbour:%d\n", Q->node_id, neighbour->id);
         if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ) //Acho que faz sentido, mas confirmar
-            Q = RelaxOfLink1(Q, neighbour->node_pointer, neighbour->type, Q2, Q3);
+            Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
         while(neighbour->next != NULL){
             neighbour = neighbour->next;
-            printf("node:%d neighbour:%d\n", Q->node_id, neighbour->id);            
             if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
-                Q = RelaxOfLink1(Q, neighbour->node_pointer, neighbour->type, Q2, Q3);
+                Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
         }
     }
     return Q;
 }
 
-Queue *RelaxOfLink1(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q2, Queue **Q3){
+Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Queue **Q2, Queue **Q3){
 
     if( adj_node_type == 1){
         adj_node_type = 3;
@@ -169,23 +171,23 @@ Queue *RelaxOfLink1(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q2, Qu
 
     if( adj_node_type < adj_node->destHead->type){
         adj_node->destHead->type=adj_node_type;
-        adj_node->destHead->cost=Q->cost;
+        adj_node->destHead->cost=Q->cost+1;
         adj_node->destHead->chosen_neighbour_id=Q->node_id;
-        ChooseQ1( &Q , Q2 , Q3 , adj_node, adj_node->destHead->type);
+        ChooseQ( Q1 , Q2 , Q3 , adj_node, adj_node->destHead->type);
     } 
     else if(adj_node_type == adj_node->destHead->type) {
         if( (Q->cost+1) < adj_node->destHead->cost){
             adj_node->destHead->type=adj_node_type;
-            adj_node->destHead->cost=Q->cost;
+            adj_node->destHead->cost=Q->cost+1;
             adj_node->destHead->chosen_neighbour_id=Q->node_id;
-            ChooseQ1( &Q , Q2 , Q3 , adj_node, adj_node->destHead->type);
+            ChooseQ( Q1 , Q2 , Q3 , adj_node, adj_node->destHead->type);
         }
     }
 
     return Q;
 }
 
-void ChooseQ1(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type)
+void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type)
 {
 
     if( type == 1){
@@ -199,128 +201,11 @@ void ChooseQ1(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type)
     return;
 }
 
-//Relaxação do link uv
-Queue *Relaxation2(Queue *Q, Queue **Q1, Queue **Q3){
+/**
+void PrintQ(Queue *Q){
 
-    Adj *neighbour=NULL;
+    Queue *auxT;
 
-    if(Q == NULL){
-        return Q;
-    }else{
-        neighbour = Q->node->adjHead;
-        printf("node:%d neighbour:%d\n", Q->node_id, neighbour->id);
-        if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ) //Acho que faz sentido, mas confirmar
-            Q = RelaxOfLink2(Q, neighbour->node_pointer, neighbour->type, Q1, Q3);
-        while(neighbour->next != NULL){
-            neighbour = neighbour->next;
-            printf("node:%d neighbour:%d\n", Q->node_id, neighbour->id);
-            if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
-                Q = RelaxOfLink2(Q, neighbour->node_pointer, neighbour->type, Q1, Q3);
-        }
-    }
-    return Q;
-}
-
-Queue *RelaxOfLink2(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Queue **Q3){
-
-    if( adj_node_type == 1){
-        adj_node_type = 3;
-    } else if (adj_node_type == 3){
-        adj_node_type = 1;
-    }
-
-    if( adj_node_type < adj_node->destHead->type){
-        adj_node->destHead->type=adj_node_type;
-        adj_node->destHead->cost=Q->cost;
-        adj_node->destHead->chosen_neighbour_id=Q->node_id;
-        ChooseQ2( &Q , Q1 , Q3 , adj_node, adj_node->destHead->type);
-    } 
-    else if(adj_node_type == adj_node->destHead->type) {
-        if( (Q->cost+1) < adj_node->destHead->cost){
-            adj_node->destHead->type=adj_node_type;
-            adj_node->destHead->cost=Q->cost;
-            adj_node->destHead->chosen_neighbour_id=Q->node_id;
-            ChooseQ2( &Q , Q1 , Q3 , adj_node, adj_node->destHead->type);
-        }
-    }
-
-    return Q;
-}
-
-void ChooseQ2(Queue **Q2, Queue **Q1, Queue **Q3, Nodes *node, int type)
-{
-
-    if( type == 1){
-        *Q1=InsertQ(node, *Q1);
-    } else if (type ==2){
-        *Q2=InsertQ(node, *Q2);
-    } else if (type == 3){
-        *Q3=InsertQ(node, *Q3);
-    }
 
     return;
-}
-
-
-
-//Relaxação do link uv
-Queue *Relaxation3(Queue *Q, Queue **Q1, Queue **Q2){
-
-    Adj *neighbour=NULL;
-
-    if(Q == NULL){
-        return Q;
-    }else{
-        neighbour = Q->node->adjHead; 
-        printf("node:%d neighbour:%d\n", Q->node_id, neighbour->id);
-        if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ) //Acho que faz sentido, mas confirmar
-            Q = RelaxOfLink3(Q, neighbour->node_pointer, neighbour->type, Q1, Q2);
-        while(neighbour->next != NULL){
-            neighbour = neighbour->next;
-            printf("node:%d neighbour:%d\n", Q->node_id, neighbour->id);
-            if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
-                Q = RelaxOfLink3(Q, neighbour->node_pointer, neighbour->type, Q1, Q2);
-        }
-    }
-    return Q;
-}
-
-Queue *RelaxOfLink3(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Queue **Q2){
-
-    if( adj_node_type == 1){
-        adj_node_type = 3;
-    } else if (adj_node_type == 3){
-        adj_node_type = 1;
-    }
-
-    if( adj_node_type < adj_node->destHead->type){
-        adj_node->destHead->type=adj_node_type;
-        adj_node->destHead->cost=Q->cost;
-        adj_node->destHead->chosen_neighbour_id=Q->node_id;
-        ChooseQ3( &Q , Q1 , Q2 , adj_node, adj_node->destHead->type);
-    } 
-    else if(adj_node_type == adj_node->destHead->type) {
-        if( (Q->cost+1) < adj_node->destHead->cost){
-            adj_node->destHead->type=adj_node_type;
-            adj_node->destHead->cost=Q->cost;
-            adj_node->destHead->chosen_neighbour_id=Q->node_id;
-            ChooseQ3( &Q , Q1 , Q2 , adj_node, adj_node->destHead->type);
-        }
-    }
-
-    return Q;
-}
-
-void ChooseQ3(Queue **Q3, Queue **Q1, Queue **Q2, Nodes *node, int type)
-{
-
-    if( type == 1){
-        *Q1=InsertQ(node, *Q1);
-    } else if (type ==2){
-        *Q2=InsertQ(node, *Q2);
-    } else if (type == 3){
-        *Q3=InsertQ(node, *Q3);
-    }
-
-    return;
-}
+}**/

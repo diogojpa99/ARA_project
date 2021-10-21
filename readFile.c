@@ -63,8 +63,8 @@ int main(int argc, char **argv)
     /******************************************** Simulation ***********************************************/
 
     printf("\n\n ------------ The simulation has started ------------ \n");
-    simulation(nodes_head, event_head);
-    Print_List_of_Destinations(nodes_head);
+    //simulation(nodes_head, event_head);
+    //Print_List_of_Destinations(nodes_head);
 
     
     
@@ -78,18 +78,18 @@ int main(int argc, char **argv)
     fclose(fp);
     
 
-
+    /**
     for(int i = 0; i < nr_nodes; i++){
         printf("\nSIMULATION %d - %d\n", i, times_simulations[i]);
-    }
+    }**/
 
     printf("\n -------------- Algorithm ------------------------- \n");
 
     Algorithm(nodes_head);
     Print_List_of_Destinations(nodes_head);
 
-    write_times_simulations();
-    write_types_costs_routs(nodes_head);
+    //write_times_simulations();
+    //write_types_costs_routs(nodes_head);
     //freeEventsNodes(eventHead);
     freeGraphNodes(nodes_head);
     return 0;
