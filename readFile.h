@@ -15,6 +15,7 @@
 
 
 #define MAX_ID 65535
+#define INFINITY 1000000
 
 enum event_type{annouce, rep_annouce};
 

@@ -4,7 +4,7 @@
 #include "readFile.h"
 
 
-#define INFINITY 1000000
+
 
 
 //Nodes
