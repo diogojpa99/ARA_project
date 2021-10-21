@@ -3,7 +3,7 @@
 #include "calendar.h"
 #include "simulation.h"
 
-
+extern int nr_nodes;
 /** createNode: Creates a new node in the Nodes List **/
 Nodes *createGraph(Nodes *listHead, int tail, int head, int type){ 
 
@@ -12,6 +12,7 @@ Nodes *createGraph(Nodes *listHead, int tail, int head, int type){
     
     
     if (searchNodesList(listHead, tail) == NULL){ //Deve ser tail ou head ? Perguntar ao prof
+        nr_nodes++;
         newNode = createNode(listHead, tail);
         listHead = insertNode(listHead, newNode, newNode->id);    
     }
@@ -532,10 +533,10 @@ DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node)
         return NULL;
         }
 
-    new_dest->chosen_neighbour_id = INFINITY;
+    new_dest->chosen_neighbour_id = INFINITE;
     new_dest->dest_id = node->id;
-    new_dest->cost = INFINITY;
-    new_dest->type = INFINITY;
+    new_dest->cost = INFINITE;
+    new_dest->type = INFINITE;
     new_dest->next_dest = NULL;
 
     if(dest_head == NULL){

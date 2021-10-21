@@ -5,6 +5,9 @@
 #include "simulation.h"
 
 int Dn = 0;
+int *times_simulations = NULL;
+int nr_nodes = 0;
+
 int main(int argc, char **argv)
 {
     FILE *fp;
@@ -73,6 +76,11 @@ int main(int argc, char **argv)
 
     fclose(fp);
     freeGraphNodes(nodes_head);
+
+
+    for(int i = 0; i < nr_nodes; i++){
+        printf("\nSIMULATION %d - %d\n", i, times_simulations[i]);
+    }
     //freeEventsNodes(eventHead);
     return 0;
 }
