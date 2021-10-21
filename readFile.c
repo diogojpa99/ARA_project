@@ -134,7 +134,7 @@ void write_types_costs_routs(Nodes *nodes_head)
     Nodes *nodes_auxT;
     DestNode *dest_auxT;
 
-    fd = fopen("types_simulations.txt","w");
+    fd = fopen("types_costs_simulations.txt","w");
 
     
 
