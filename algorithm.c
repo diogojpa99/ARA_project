@@ -1,6 +1,7 @@
 #include "readFile.h"
 #include "nodes.h"
-
+#include "calendar.h"
+#include "algorithm.h"
 void Algorithm(Nodes *nodes_head, int destiny_id) {
 
    Nodes *auxT = NULL; 
