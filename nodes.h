@@ -37,7 +37,7 @@ void freeGraphNodes(Nodes *nodes_head);
 
 Nodes *AdjToNode(Nodes *listHead);
 
-DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node);
+DestNode *createDestinyAlgorithm(DestNode *dest_head, int node_id, int dest_id);
 
 Neighbours *createNeighbourToDestiny(int *message, int type);
 

@@ -523,7 +523,7 @@ Nodes *AdjToNode(Nodes *listHead){
     return listHead;
 }
 
-DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node)
+DestNode *createDestinyAlgorithm(DestNode *dest_head, int node_id, int dest_id)
 {
     DestNode *new_dest = NULL;
 
@@ -532,12 +532,20 @@ DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node)
         return NULL;
         }
 
-    new_dest->chosen_neighbour_id = INFINITY;
-    new_dest->dest_id = node->id;
-    new_dest->cost = INFINITY;
-    new_dest->type = INFINITY;
-    new_dest->next_dest = NULL;
-
+    if(node_id == dest_id){
+        new_dest->chosen_neighbour_id = 0;
+        new_dest->dest_id = node_id;
+        new_dest->cost = 0;
+        new_dest->type = 0;
+        new_dest->next_dest = NULL;
+    }else{
+        new_dest->chosen_neighbour_id = INFINITY;
+        new_dest->dest_id = node_id;
+        new_dest->cost = INFINITY;
+        new_dest->type = INFINITY;
+        new_dest->next_dest = NULL;
+    }
+    
     if(dest_head == NULL){
         dest_head = new_dest;
         dest_head->next_dest = NULL;

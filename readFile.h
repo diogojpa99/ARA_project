@@ -68,7 +68,7 @@ typedef struct _Queue{
     int cost;
     DestNode *dest;
     Nodes *node;
-    struct _Nodes *next;
+    struct _Queue *next;
 } Queue;
 
 
