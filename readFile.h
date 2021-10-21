@@ -80,5 +80,9 @@ typedef struct _Queue{
 
 void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, Nodes *nodes_head);
 
+void write_times_simulations();
+
+void write_types_costs_routs(Nodes *nodes_head);
+
 
 #endif //READFILE INCLUDED

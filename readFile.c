@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
     
     
-    fp = fopen("grafo2.txt","r");
+    fp = fopen("Mini_Internet.tsv","r");
     srand(time(0));
 
     if(fp==NULL){
@@ -75,13 +75,17 @@ int main(int argc, char **argv)
     Print_List_of_Adjacencies(nodes_head);
 
     fclose(fp);
-    freeGraphNodes(nodes_head);
+    
 
 
     for(int i = 0; i < nr_nodes; i++){
         printf("\nSIMULATION %d - %d\n", i, times_simulations[i]);
     }
+
+    write_times_simulations();
+    write_types_costs_routs(nodes_head);
     //freeEventsNodes(eventHead);
+    freeGraphNodes(nodes_head);
     return 0;
 }
 
@@ -109,3 +113,41 @@ void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, 
     
 }
 
+void write_times_simulations()
+{
+    FILE *fp;
+    int i;
+
+
+    fp = fopen("times_simulations.txt","w");
+
+    for(i = 0; i < nr_nodes; i++){
+        fprintf(fp, "%d\n", times_simulations[i]);
+    }
+    fclose(fp);
+    
+}
+
+void write_types_costs_routs(Nodes *nodes_head)
+{
+    FILE *fd;
+    Nodes *nodes_auxT;
+    DestNode *dest_auxT;
+
+    fd = fopen("types_simulations.txt","w");
+
+    
+
+    if(nodes_head==NULL){
+        return;
+    }else{
+        for(nodes_auxT = nodes_head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
+            for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
+                fprintf(fd,"%d %d\n", dest_auxT->type, dest_auxT->cost);  
+            }
+        }
+    }
+    fclose(fd);
+
+    return;
+}
