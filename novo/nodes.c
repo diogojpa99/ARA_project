@@ -202,6 +202,10 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
             
         }
 
+        //print list of neighbours to that destiny
+        printf("\n\t\tPRINTING DESTINIES OF NODE %d\n", process_node->id);
+        printDestiny(process_node->destHead);
+
         //Atualizar a informação que temos para chegar a esse destino
         //updateDestiny(current_dest, message, type); //fazer esta função
 
@@ -227,6 +231,26 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
     } 
 
     return NULL;  //Se nada mudar, então não se anuncia nada
+}
+
+void printDestiny(DestNode *destiny_head)
+{
+    printf("\n\t\tPRINTING DESTINIES\n");
+    DestNode *destiny_auxT;
+    Neighbours *neighbour_auxT;
+
+    if(destiny_head == NULL){
+        return;
+    }else{
+        for(destiny_auxT = destiny_head; destiny_auxT != NULL; destiny_auxT = destiny_auxT->next_dest) {
+            printf("\n[%d]->", destiny_auxT->dest_id);   fflush(stdout);
+            for(neighbour_auxT = destiny_auxT->neighbours_head; neighbour_auxT != NULL; neighbour_auxT = neighbour_auxT->next_neighbour) {
+                printf("[id:%d|type:%d|cost%d]->", neighbour_auxT->neighbour_id, neighbour_auxT->type, neighbour_auxT->neighbour_estim_cost);  fflush(stdout);
+            }
+            printf("NULL\n");
+        }
+    }
+    return;
 }
 
 Neighbours *createNeighbourToDestiny(int *message, int type)

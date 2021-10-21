@@ -11,6 +11,9 @@
 #include <unistd.h>
 
 
+
+
+
 #define MAX_ID 65535
 
 enum event_type{annouce, rep_annouce};
@@ -27,6 +30,13 @@ typedef struct _Event{
 
 
 // Implementar o grafo pelo método de lista de adjacências
+typedef struct _Neighbours
+{
+    int neighbour_id;
+    int neighbour_estim_cost;
+    int type;
+    struct _Neighbours *next_neighbour;   
+} Neighbours;
 
 typedef struct _Adj{
     int id, neighbor, type, An; //What's the commercial relation between me and my "list head"  and what's the cost from the link between me and my "list head"
@@ -39,7 +49,8 @@ typedef struct _DestinyNode{
     int dest_id;//destino a que consigo chegar
     int cost;
     int type;
-    int neighbour_id;//vizinho por onde recebi a informacao do destino
+    int chosen_neighbour_id;//vizinho por onde recebi a informacao do destino
+    Neighbours *neighbours_head; 
     struct _DestinyNode *next_dest;
 } DestNode;
 
@@ -58,6 +69,9 @@ typedef struct _Queue{
     Nodes *node;
     struct _Nodes *next;
 } Queue;
+
+
+
 
 void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, Nodes *nodes_head);
 

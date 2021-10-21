@@ -48,6 +48,7 @@ Neighbours *orderNeighboursToDestinyAscendent(Neighbours *neighbours_head);
 
 Neighbours *switch_neighbours(Neighbours *left, Neighbours *right);
 
+void printDestiny(DestNode *destiny_head);
 
 
 #endif //NODES INCLUDED

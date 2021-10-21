@@ -1,10 +1,12 @@
-#include "readFile.h"
-#include "nodes.h"
-#include "simulation.h"
+
 #include "calendar.h"
 
 
-int Dn = 0;
+#include "nodes.h"
+#include "simulation.h"
+
+
+extern int Dn;
 
 //AnnounceNode: Para cada ligação (adjacente), vai se criar um novo evento.
 Event *announceNode(Event *event_head, Nodes *woken_node){
@@ -197,7 +199,7 @@ Event *processEvent(Event *event_head, int process_node_id , Nodes *nodes_head)
     //Segundo, processar o evento -> Atualizar a tabela de encaminhamento
     source_node = updateDestToNode(orig_node, event_head->message, event_head->type);
     if (source_node != NULL){
-        printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d | Custo: %d]\n", orig_node->id,source_node->dest_id, source_node->neighbour_id, source_node->type, source_node->cost); 
+        printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d | Custo: %d]\n", orig_node->id,source_node->dest_id, source_node->chosen_neighbour_id, source_node->type, source_node->cost); 
         event_head = RepAnnouncement(event_head, orig_node, source_node);
     }
     else{
