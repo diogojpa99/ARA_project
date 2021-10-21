@@ -494,7 +494,6 @@ void freeGraphNodes(Nodes *nodes_head)
 
     }
 }
-<<<<<<< HEAD
 
 Nodes *AdjToNode(Nodes *listHead){
     
@@ -533,7 +532,7 @@ DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node)
         return NULL;
         }
 
-    new_dest->neighbour_id = INFINITY;
+    new_dest->chosen_neighbour_id = INFINITY;
     new_dest->dest_id = node->id;
     new_dest->cost = INFINITY;
     new_dest->type = INFINITY;
@@ -548,5 +547,3 @@ DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node)
     }
     return dest_head;
 }
-=======
->>>>>>> 85a71d974649951b92c9fb0abbda4effb7e0129f

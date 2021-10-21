@@ -35,11 +35,9 @@ void Print_List_of_Destinations(Nodes *nodes_Head);
 
 void freeGraphNodes(Nodes *nodes_head);
 
-<<<<<<< HEAD
 Nodes *AdjToNode(Nodes *listHead);
 
 DestNode *createDestinyAlgorithm(DestNode *dest_head, Nodes *node);
-=======
 
 Neighbours *createNeighbourToDestiny(int *message, int type);
 
@@ -54,6 +52,5 @@ Neighbours *switch_neighbours(Neighbours *left, Neighbours *right);
 void printDestiny(DestNode *destiny_head);
 
 void updateEstimateToDestiny(DestNode *current_dest);
->>>>>>> 85a71d974649951b92c9fb0abbda4effb7e0129f
 
 #endif //NODES INCLUDED
