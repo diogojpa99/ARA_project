@@ -3,6 +3,7 @@
 #include "calendar.h"
 #include "nodes.h"
 #include "simulation.h"
+#include "algorithm.h"
 
 int Dn = 0;
 int *times_simulations = NULL;
@@ -20,7 +21,7 @@ int main(int argc, char **argv)
 
     
     
-    fp = fopen("Mini_Internet.tsv","r");
+    fp = fopen("grafo2.txt","r");
     srand(time(0));
 
     if(fp==NULL){
@@ -81,6 +82,11 @@ int main(int argc, char **argv)
     for(int i = 0; i < nr_nodes; i++){
         printf("\nSIMULATION %d - %d\n", i, times_simulations[i]);
     }
+
+    printf("\n -------------- Algorithm ------------------------- \n");
+
+    Algorithm(nodes_head);
+    Print_List_of_Destinations(nodes_head);
 
     write_times_simulations();
     write_types_costs_routs(nodes_head);
