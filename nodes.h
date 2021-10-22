@@ -31,7 +31,7 @@ DestNode *searchDestiny(DestNode *dest_head, int dest_id);
 
 DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int cost, int type);
 
-void Print_List_of_Destinations(Nodes *nodes_Head);
+void Print_List_of_Destinations(Nodes *nodes_Head, int mode);
 
 void freeGraphNodes(Nodes *nodes_head);
 

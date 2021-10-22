@@ -1,9 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-data = np.loadtxt('types_costs_simulations.txt')
-sorted_data = np.sort(data)
-cumulative = np.cumsum(sorted_data)
+data = np.loadtxt('times_simulations.txt')
 
-plt.plot(cumulative)
+cdf = data.cumsum(0)
+ccdf = 1 - cdf
+
+plt.plot(range(len(cdf)),cdf,'bo')
+plt.ylabel('CCDF')
+plt.xlabel('Degree')
 plt.show()

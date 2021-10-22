@@ -443,10 +443,29 @@ DestNode *createDestiny(DestNode *dest_head, int neigbour_id, int dest_id, int c
     return dest_head;
 }
 
-void Print_List_of_Destinations(Nodes *nodes_Head)
+void Print_List_of_Destinations(Nodes *nodes_Head, int mode)
 {
     Nodes *nodes_auxT;
     DestNode *dest_auxT;
+    FILE *fd;
+
+    switch (mode)
+    {
+    case 2:
+        if((fd = fopen("dest_interactive.txt", "w")) == NULL){
+            printf("Error: Could not open file \n");
+            exit(0);
+        }
+        break;
+    
+    case 3:
+        if((fd = fopen("dest_interactive.txt", "w")) == NULL){
+                printf("Error: Could not open file \n");
+                exit(0);
+            }
+        break;
+    }
+    
 
     if(nodes_Head==NULL){
         return;
@@ -469,10 +488,13 @@ void freeGraphNodes(Nodes *nodes_head)
     Adj *aux_adj = NULL;
     DestNode *aux_dest = NULL;
 
+    
+
     if(nodes_head == NULL)
     {
         return;
     }else{
+        
         while (nodes_head != NULL)
         {
             auxH = nodes_head;
@@ -490,8 +512,9 @@ void freeGraphNodes(Nodes *nodes_head)
                 auxH->destHead = auxH->destHead->next_dest; 
                 free(aux_dest);
             }
+            free(auxH);
         }
-        free(auxH);
+        
 
     }
 }

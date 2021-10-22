@@ -85,4 +85,6 @@ void write_times_simulations();
 void write_types_costs_routs(Nodes *nodes_head);
 
 
+
+
 #endif //READFILE INCLUDED
