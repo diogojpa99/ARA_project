@@ -14,10 +14,10 @@
 
 
 
-#define MAX_ID 65535
+#define MAX_ID 65536
 
 #ifndef INFINITE
-#define INFINITE 65536
+#define INFINITE 1000000
 #endif 
 
 

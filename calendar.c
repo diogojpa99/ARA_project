@@ -17,10 +17,7 @@ Event *announceNode(Event *event_head, Nodes *woken_node){
     /*  Antes de se anunciar aos seus vizinhos, o nó que acabou de acordar coloca na sua tabela de 
         encaminhamento que consegue chegar a ele próprio com "custo" zero. */
     woken_node->destHead = updateDestToNode(woken_node, wake_message, 0);
-    
-    
-    Print_List_of_Destinations(woken_node, 3);
-
+    //Print_List_of_Destinations(woken_node, 3);
     if(woken_node == NULL){
         return event_head;
     }else{    
@@ -67,13 +64,13 @@ Event *RepAnnouncement(Event *event_head, Nodes *node_orig, DestNode *source_nod
         
         
         neighbour = node_orig->adjHead;
-            if( source_node->type == 1 || neighbour->type == 1){
+            if( (source_node->type == 1 || neighbour->type == 1) && neighbour->id != node_orig->id){
                 printf("\n-- 45 -- : neihbour_id = %d\n", neighbour->id);
                 event_head = createEvent(event_head, node_orig, source_node->dest_id, neighbour, source_node->cost);
             }
         while(neighbour->next != NULL){
             neighbour = neighbour->next;
-            if( source_node->type == 1 || neighbour->type == 1){
+            if((source_node->type == 1 || neighbour->type == 1) && neighbour->id != node_orig->id){
                 event_head = createEvent(event_head, node_orig, source_node->dest_id, neighbour, source_node->cost);
                 printf("-- 46 -- : neihbour_id = %d\n", neighbour->id);
             }
