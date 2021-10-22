@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     
     
-    fp = fopen("grafo2.txt","r");
+    fp = fopen("grafo4.txt","r");
     srand(time(0));
 
     if(fp == NULL){

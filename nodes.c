@@ -208,7 +208,13 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
             
         }
 
-        if(process_node->id != message[1]) updateEstimateToDestiny(current_dest); // apenas atualizamos o destino se o destino não formos nós próprios
+        if(process_node->id != message[1]) {
+            if(updateEstimateToDestiny(current_dest)){
+                printf("Alteraçãopooooooo");
+                return current_dest;
+            }
+            
+        } // apenas atualizamos o destino se o destino não formos nós próprios
 
         //print list of neighbours to that destiny
         printf("\n\t\tPRINTING DESTINIES OF NODE %d\n", process_node->id);
@@ -219,29 +225,39 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
     return NULL;  //Se nada mudar, então não se anuncia nada
 }
 
-void updateEstimateToDestiny(DestNode *current_dest)
+int updateEstimateToDestiny(DestNode *current_dest)
 {
     Neighbours *aux = NULL;
+    int old_id  = current_dest->chosen_neighbour_id;
     //encontrar o melhor vizinho numa lista ordenada por custos
     //devemos dr prioridade aos clientes, depois aos pares e depois aos fornecedores
     if((aux = searchForNeighbourToDestiny(current_dest->neighbours_head, -1, 1)) != NULL){//Encontrámos um vizinho que é nosso cliente
+        printf("ALTERACAO PARA UM CLIENTE");
         current_dest->chosen_neighbour_id = aux->neighbour_id;
         current_dest->cost = aux->neighbour_estim_cost;
         current_dest->type = aux->type;
-        return;
+        if(current_dest->chosen_neighbour_id != old_id)
+            return 1;
+        
         
     }else if((aux = searchForNeighbourToDestiny(current_dest->neighbours_head, -1, 2)) != NULL){
+        printf("ALTERACAO PARA UM PAR");
         current_dest->chosen_neighbour_id = aux->neighbour_id;
         current_dest->cost = aux->neighbour_estim_cost;
         current_dest->type = aux->type;
-        return;
+        if(current_dest->chosen_neighbour_id != old_id)
+            return 1;
+        
     }else if((aux = searchForNeighbourToDestiny(current_dest->neighbours_head, -1, 3)) != NULL){
+        printf("ALTERACAO PARA UM fornecedor");
         current_dest->chosen_neighbour_id = aux->neighbour_id;
         current_dest->cost = aux->neighbour_estim_cost;
         current_dest->type = aux->type;
-        return;
+        if(current_dest->chosen_neighbour_id != old_id)
+            return 1;
+        
     }
-    return;
+    return 0;
 }
 
 void printDestiny(DestNode *destiny_head)
@@ -259,6 +275,7 @@ void printDestiny(DestNode *destiny_head)
                 printf("[id:%d|type:%d|cost%d]->", neighbour_auxT->neighbour_id, neighbour_auxT->type, neighbour_auxT->neighbour_estim_cost);  fflush(stdout);
             }
             printf("NULL\n");
+            printf("Choosen: %d", destiny_auxT->chosen_neighbour_id);
         }
     }
     return;

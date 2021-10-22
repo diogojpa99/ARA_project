@@ -55,6 +55,6 @@ Neighbours *switch_neighbours(Neighbours *left, Neighbours *right);
 
 void printDestiny(DestNode *destiny_head);
 
-void updateEstimateToDestiny(DestNode *current_dest);
+int updateEstimateToDestiny(DestNode *current_dest);
 
 #endif //NODES INCLUDED
