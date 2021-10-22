@@ -5,6 +5,6 @@
 #include "readFile.h"
 
 
-void simulation(Nodes *nodes_head, Event *event_head);
+void simulations(Nodes *nodes_head, Event *event_head);
 
 #endif //SIMULATION INCLUDED

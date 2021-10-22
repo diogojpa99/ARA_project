@@ -451,15 +451,15 @@ void Print_List_of_Destinations(Nodes *nodes_Head, int mode)
 
     switch (mode)
     {
-    case 2:
-        if((fd = fopen("dest_interactive.txt", "w")) == NULL){
+    case 3:
+        if((fd = fopen("dest_simulation.txt", "w")) == NULL){
             printf("Error: Could not open file \n");
             exit(0);
         }
         break;
     
-    case 3:
-        if((fd = fopen("dest_interactive.txt", "w")) == NULL){
+    case 5:
+        if((fd = fopen("dest_algorithm.txt", "w")) == NULL){
                 printf("Error: Could not open file \n");
                 exit(0);
             }
@@ -471,13 +471,14 @@ void Print_List_of_Destinations(Nodes *nodes_Head, int mode)
         return;
     }else{
         for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
-            printf("\n[%d]->", nodes_auxT->id);   fflush(stdout);
+            fprintf(fd, "\n[%d]->", nodes_auxT->id);   
             for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
-                printf("[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);  fflush(stdout);
+                fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
             }
-            printf("NULL\n");
+            fprintf(fd, "NULL\n");
         }
     }
+    fclose(fd);
 
     return;
 }

@@ -11,7 +11,7 @@ int nr_nodes = 0;
 
 int main(int argc, char **argv)
 {
-    enum modes_{help, none, interactive, ninteractive, algorithm};
+    enum modes_{help, none, interactive_sim, simulation, interactive_algo, algorithm };
     enum modes_ mode = none;
 
     FILE *fp;
@@ -44,18 +44,23 @@ int main(int argc, char **argv)
         {
         case 'm':
             strcpy(buffer, optarg);
-            if(strcmp(buffer, "interactive") == 0){
+            if(strcmp(buffer, "interactive_sim") == 0){
                 commandLineValidation(argc, argv, &input_origin_id, &input_dest_id, nodes_head);
-                mode = interactive;
-            }
-            else if(strcmp(buffer, "help") == 0){
+                mode = interactive_sim;
+
+            }else if(strcmp(buffer, "interactive_algo") == 0){
                 commandLineValidation(argc, argv, &input_origin_id, &input_dest_id, nodes_head);
-            }else if(strcmp(buffer, "ninteractive") == 0){
-                mode = ninteractive;
-            }
-            else if(strcmp(buffer, "algorith") == 0){
+                mode = interactive_algo;
+
+            }else if(strcmp(buffer, "help") == 0){
                 commandLineValidation(argc, argv, &input_origin_id, &input_dest_id, nodes_head);
+
+            }else if(strcmp(buffer, "simulation") == 0){
+                mode = simulation;
+
+            }else if(strcmp(buffer, "algorithm") == 0){
                 mode = algorithm;
+
             }else{
                 printf("Error: Bad arguments in program call\n");
                 printf("Type: ./graph -m help\n");
@@ -69,30 +74,38 @@ int main(int argc, char **argv)
 
     switch (mode)
     {
-        case interactive:
+        case interactive_sim:
             /*tem que dar como output o tipo e o comprimento da rota entre um destino e uma source dados na funcao commandLineValidation*/
             printf("\n\n ------------ The simulation has started ------------ \n");
-            simulation(nodes_head, event_head);
-            Print_List_of_Destinations(nodes_head, ninteractive);
+            simulations(nodes_head, event_head);
+            Print_List_of_Destinations(nodes_head, simulation);
 
             break;
-        case ninteractive:
+        case simulation:
             printf("\n\n ------------ The simulation has started ------------ \n");
             
-            simulation(nodes_head, event_head);
-            Print_List_of_Destinations(nodes_head, ninteractive);
+            simulations(nodes_head, event_head);
+            Print_List_of_Destinations(nodes_head, simulation);
             
             write_times_simulations();
             write_types_costs_routs(nodes_head);
             break;
 
-        case algorithm:
+        case interactive_algo:
             printf("\n -------------- Algorithm ------------------------- \n");
             nodes_head = AdjToNode(nodes_head);
 
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
             //Print_List_of_Adjacencies(nodes_head);
+
+            break;
+        case algorithm:
+            printf("\n -------------- Algorithm ------------------------- \n");
+            nodes_head = AdjToNode(nodes_head);
+
+            Algorithm(nodes_head);
+            Print_List_of_Destinations(nodes_head, algorithm);
 
             break;
         default:
@@ -116,7 +129,7 @@ void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, 
 
     if( argc == 3 && (strcmp(argv[2], "help") == 0))
     {
-        printf("A aplicação graph é invocada com o comando\n\tgraph -m <interactive/ninteractive/algorithm/help>\n");
+        printf("A aplicação graph é invocada com o comando\n\tgraph -m <interactive_sim/interactive_algo/algorithm/simulation/help>\n");
         exit(1);
     }    
     else if(argc == 3 && (strcmp(argv[2], "interactive") == 0 || strcmp(argv[2], "algorithm") == 0))

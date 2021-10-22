@@ -12,7 +12,7 @@ extern int nr_nodes;
 /* preenchemos as tabelas de encaminhamento dos nós que conseguem chegar ao nó de destino x. E  */
 /* Depois fazemos o mesmo para os restantes nós da lista de nós.                                */
 /************************************************************************************************/
-void simulation(Nodes *nodes_head, Event *event_head){
+void simulations(Nodes *nodes_head, Event *event_head){
     
     Nodes *auxT = NULL; 
     int i = 1;
