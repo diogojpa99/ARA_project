@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     
     
-    fp = fopen("grafo4.txt","r");
+    fp = fopen("Mini_Internet.tsv","r");
     srand(time(0));
 
     if(fp == NULL){

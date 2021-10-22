@@ -209,8 +209,8 @@ DestNode *updateDestToNode(Nodes *process_node, int *message, int type)
         }
 
         if(process_node->id != message[1]) {
-            if(updateEstimateToDestiny(current_dest)){
-                printf("Alteraçãopooooooo\n");
+            if(updateEstimateToDestiny(current_dest) == 1){
+                printf("Alteraçãooooooooo\n");
                 return current_dest;
             }
             
@@ -362,9 +362,9 @@ Neighbours *orderNeighboursToDestinyAscendent(Neighbours *neighbours_head)
 
     bool trocas = true;
 
-    printf("\n%d\n", neighbours_head->neighbour_id); fflush(stdout);
-    printf("\n%d\n", neighbours_head->neighbour_estim_cost); fflush(stdout);
-    printf("\n%d\n", neighbours_head->type); fflush(stdout);
+    printf("\n%d\n", neighbours_head->neighbour_id); 
+    printf("\n%d\n", neighbours_head->neighbour_estim_cost); 
+    printf("\n%d\n", neighbours_head->type); 
 
     if((neighbours_head->next_neighbour != NULL) && (neighbours_head != NULL)){
         while(trocas){
@@ -375,14 +375,12 @@ Neighbours *orderNeighboursToDestinyAscendent(Neighbours *neighbours_head)
 
             while(right->next_neighbour != NULL){
 
-                if(right->neighbour_estim_cost < right->next_neighbour->neighbour_estim_cost){
+                if(right->neighbour_estim_cost > right->next_neighbour->neighbour_estim_cost){
                     trocas = true;
                     left->next_neighbour = switch_neighbours(right, right->next_neighbour);
 
                 }
-
                 left = right;
-
                 if(right->next_neighbour != NULL){
                     right = right->next_neighbour;
                 }
@@ -492,6 +490,7 @@ void Print_List_of_Destinations(Nodes *nodes_Head, int mode)
             for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
                 if(dest_auxT->chosen_neighbour_id != 1000000){
                     fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
+                    //fprintf(fd, "[dest_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id , dest_auxT->type,dest_auxT->cost);
                 }
             }
             fprintf(fd, "NULL\n");

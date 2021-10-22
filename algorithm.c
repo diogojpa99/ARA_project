@@ -146,16 +146,25 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3){
 
     Adj *neighbour=NULL;
 
+    /*
+        Nós só vamos tirar o elemento da pilha se e só se o que está na pilha for o que está no destiny do nó
+    */
+    
     if(Q == NULL){
         return Q;
     }else{
-        neighbour = Q->node->adjHead;
-        if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ) //Acho que faz sentido, mas confirmar
-            Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
-        while(neighbour->next != NULL){
-            neighbour = neighbour->next;
-            if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
+        if((Q->node->destHead->type != Q->type) && (Q->node->destHead->cost != Q->cost)){
+            return Q;
+        }
+        else{
+            neighbour = Q->node->adjHead;
+            if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ) //Acho que faz sentido, mas confirmar
                 Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
+            while(neighbour->next != NULL){
+                neighbour = neighbour->next;
+                if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
+                    Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
+            }
         }
     }
     return Q;
