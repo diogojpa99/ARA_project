@@ -35,6 +35,10 @@ void Print_List_of_Destinations(Nodes *nodes_Head, int mode);
 
 void freeGraphNodes(Nodes *nodes_head);
 
+void clearAllDest(Nodes *nodes_head);
+
+void clearDestinys(DestNode *list);
+
 Nodes *AdjToNode(Nodes *listHead);
 
 DestNode *createDestinyAlgorithm(DestNode *dest_head, int node_id, int dest_id);

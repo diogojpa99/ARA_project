@@ -519,6 +519,33 @@ void freeGraphNodes(Nodes *nodes_head)
     }
 }
 
+void clearAllDest(Nodes *nodes_head){
+
+    Nodes *auxT=NULL;
+
+    if(nodes_head == NULL){
+        return;
+    } else{
+        auxT= nodes_head;
+        clearDestinys(auxT->destHead);
+        while (auxT->next !=NULL){
+            auxT=auxT->next;
+            clearDestinys(auxT->destHead);
+        }
+    }
+    return;
+}
+
+void clearDestinys(DestNode *list){
+
+  if(list!=NULL){
+    clearDestinys(list->next_dest);
+    free(list);
+  }
+
+  return;
+}
+
 Nodes *AdjToNode(Nodes *listHead){
     
     Nodes *nodes_auxT, *auxT;
