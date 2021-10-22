@@ -585,7 +585,7 @@ DestNode *createDestinyAlgorithm(DestNode *dest_head, int node_id, int dest_id)
         }
 
     if(node_id == dest_id){
-        new_dest->chosen_neighbour_id = 0;
+        new_dest->chosen_neighbour_id = dest_id;
         new_dest->dest_id = dest_id;
         new_dest->cost = 0;
         new_dest->type = 0;

@@ -86,10 +86,8 @@ int main(int argc, char **argv)
             break;
         case simulation:
             printf("\n\n ------------ The simulation has started ------------ \n");
-            
             simulations(nodes_head, event_head);
             Print_List_of_Destinations(nodes_head, simulation);
-            
             write_times_simulations();
             write_types_costs_routs(nodes_head);
             break;
@@ -104,8 +102,7 @@ int main(int argc, char **argv)
             break;
         case algorithm:
             printf("\n -------------- Algorithm ------------------------- \n");
-            nodes_head = AdjToNode(nodes_head);
-
+            clearAllDest(nodes_head);
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
 
