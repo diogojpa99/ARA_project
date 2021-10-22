@@ -26,11 +26,7 @@ int main(int argc, char **argv)
 
     
     
-<<<<<<< HEAD
     fp = fopen("grafo4.txt","r");
-=======
-    fp = fopen("grafo1.txt","r");
->>>>>>> 27f78e6a8f45a0c93d95e3f5ee410661cb5961cc
     srand(time(0));
 
     if(fp == NULL){
