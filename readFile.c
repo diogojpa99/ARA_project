@@ -38,6 +38,9 @@ int main(int argc, char **argv)
         nodes_head = createGraph(nodes_head, tail, head, type);
     }
 
+    //Por os Adjacentes a apontar para a posição deles na lista de nós
+    nodes_head = AdjToNode(nodes_head);
+
     //validacao da linha de comandos
     while((opt = getopt(argc, argv, "m:")) != -1){
         switch (opt)
@@ -93,8 +96,7 @@ int main(int argc, char **argv)
 
         case interactive_algo:
             printf("\n -------------- Algorithm ------------------------- \n");
-            nodes_head = AdjToNode(nodes_head);
-
+            clearAllDest(nodes_head);
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
             //Print_List_of_Adjacencies(nodes_head);

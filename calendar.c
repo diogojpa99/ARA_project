@@ -23,15 +23,8 @@ Event *announceNode(Event *event_head, Nodes *woken_node){
 
     if(woken_node == NULL){
         return event_head;
-    }else{
-        
-        
-        
+    }else{    
         //Dn++; // Escolher o primeiro nó para acordar -> Dn=0 ; Ao anunciar o primeiro nó que acordou -> Dn=1
-        
-        
-        
-        
         neighbour = woken_node->adjHead;
             event_head = createEvent(event_head, woken_node, woken_node->id, neighbour, 0);
         while(neighbour->next != NULL){
