@@ -104,6 +104,7 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     if (new_event->An < adj->An) new_event->An = adj->An;  //Tratar da fila de espera de cada ligação    
     new_event->origin_node = node_orig->id; // nó que está a enviar a sms
     new_event->dest_node = adj->id; // nó a quem se destina a sms
+    new_event->dest_node_pointer=adj->node_pointer;
 
     //relaçao entre os dois nós, da prespetiva do nó adjacente que é o que vai ser processado 
     if (adj->type == 1){
@@ -189,7 +190,7 @@ void processCalendar(Event *event_head, Nodes *woken_node, Nodes *nodes_head)
         printf("\n ----------- 171 -------------- \n");
         printEvents(event_head);
         printf("\n ----------- 171 -------------- \n");
-        event_head = processEvent(event_head, event_head->dest_node, nodes_head);
+        event_head = processEvent(event_head, event_head->dest_node_pointer, nodes_head);
         event_head = popEvent(event_head);        
     }
 
@@ -200,14 +201,14 @@ void processCalendar(Event *event_head, Nodes *woken_node, Nodes *nodes_head)
 process_node_id - nó de destino do evento
 
 */
-Event *processEvent(Event *event_head, int process_node_id , Nodes *nodes_head)
+Event *processEvent(Event *event_head, Nodes *process_node , Nodes *nodes_head)
 {
    
     Nodes *orig_node = NULL;
     DestNode *source_node = NULL;
 
     //Primeiro, encontrar o nó que queremos processar
-    orig_node = searchNodesList(nodes_head, process_node_id);
+    orig_node = process_node;
     printf("\nNode that is being currently processed: %d\n", orig_node->id);
     Dn = event_head->An; //O instante do calendário é o instante do evento que estamos a processar
     printf("\n\nTIME - %d\n\n", Dn);
