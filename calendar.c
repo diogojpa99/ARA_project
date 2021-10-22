@@ -19,7 +19,7 @@ Event *announceNode(Event *event_head, Nodes *woken_node){
     woken_node->destHead = updateDestToNode(woken_node, wake_message, 0);
     
     
-    Print_List_of_Destinations(woken_node);
+    Print_List_of_Destinations(woken_node, 3);
 
     if(woken_node == NULL){
         return event_head;
