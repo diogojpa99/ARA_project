@@ -65,14 +65,14 @@ Event *RepAnnouncement(Event *event_head, Nodes *node_orig, DestNode *source_nod
         
         neighbour = node_orig->adjHead;
             if( (source_node->type == 1 || neighbour->type == 1) && neighbour->id != node_orig->id){
-                printf("\n-- 45 -- : neihbour_id = %d\n", neighbour->id);
+                //printf("\n-- 45 -- : neihbour_id = %d\n", neighbour->id);
                 event_head = createEvent(event_head, node_orig, source_node->dest_id, neighbour, source_node->cost);
             }
         while(neighbour->next != NULL){
             neighbour = neighbour->next;
             if((source_node->type == 1 || neighbour->type == 1) && neighbour->id != node_orig->id){
                 event_head = createEvent(event_head, node_orig, source_node->dest_id, neighbour, source_node->cost);
-                printf("-- 46 -- : neihbour_id = %d\n", neighbour->id);
+                //printf("-- 46 -- : neihbour_id = %d\n", neighbour->id);
             }
         }
     }
@@ -90,10 +90,10 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     srand((unsigned) time(&t));
     
     int Sn = 1 + rand()%3;
-    printf("\n\nSN = %d", Sn);
+    //printf("\n\nSN = %d", Sn);
    
     if((new_event = (Event*) calloc(1, sizeof(Event))) == NULL){   /** Creation of a New Event **/
-        printf("Memory is full. Couldn't register request.\n");
+        //printf("Memory is full. Couldn't register request.\n");
 		return event_head;
     }
     
@@ -120,7 +120,7 @@ Event *createEvent(Event *event_head, Nodes *node_orig, int woken_node_id, Adj *
     new_event->message[1] = woken_node_id;
     new_event->message[2] = cost; 
 
-    printf("\n-- 96 --: New Event: time=%d | out_node=%d | in_node=%d | type=%d | message: %d %d %d\n",new_event->An,new_event->origin_node,new_event->dest_node,new_event->type, new_event->message[0], new_event->message[1], new_event->message[2]);
+    //printf("\n-- 96 --: New Event: time=%d | out_node=%d | in_node=%d | type=%d | message: %d %d %d\n",new_event->An,new_event->origin_node,new_event->dest_node,new_event->type, new_event->message[0], new_event->message[1], new_event->message[2]);
 
     return event_head = insertEventOrdered(event_head, new_event);
 }
@@ -148,9 +148,9 @@ Event *insertEventOrdered(Event *list_head, Event *new_event){
             auxH->next = new_event;
         }
     }
-    printf("\n ----------- 135 -------------- \n");
-    printEvents(list_head);
-    printf("\n ----------- 135 -------------- \n");
+    //printf("\n ----------- 135 -------------- \n");
+    //printEvents(list_head);
+    //printf("\n ----------- 135 -------------- \n");
     return list_head;
 }
 
@@ -163,7 +163,6 @@ void printEvents(Event *listHead){
         return;
     }else{
         auxH = listHead;
-        
         printf("\nEvent: [time %d | %d -> %d | message: %d %d %d ]\n",auxH->An, auxH->origin_node, auxH->dest_node, auxH->message[0], auxH->message[1], auxH->message[2]);
         //printf("\t[time=%d|%d->%d|Type:%d]->",auxH->An,auxH->origin_node,auxH->dest_node,auxH->type); fflush(stdout);//prompt
         auxT = listHead->next;
@@ -184,9 +183,9 @@ void processCalendar(Event *event_head, Nodes *woken_node, Nodes *nodes_head)
     event_head = announceNode(event_head, woken_node); //First wake up the node, create the respective events and insert them in the calendar
     
     while(event_head != NULL){
-        printf("\n ----------- 171 -------------- \n");
-        printEvents(event_head);
-        printf("\n ----------- 171 -------------- \n");
+        //printf("\n ----------- 171 -------------- \n");
+        //printEvents(event_head);
+        //printf("\n ----------- 171 -------------- \n");
         event_head = processEvent(event_head, event_head->dest_node_pointer, nodes_head);
         event_head = popEvent(event_head);        
     }
@@ -206,18 +205,18 @@ Event *processEvent(Event *event_head, Nodes *process_node , Nodes *nodes_head)
 
     //Primeiro, encontrar o nó que queremos processar
     orig_node = process_node;
-    printf("\nNode that is being currently processed: %d\n", orig_node->id);
+    //printf("\nNode that is being currently processed: %d\n", orig_node->id);
     Dn = event_head->An; //O instante do calendário é o instante do evento que estamos a processar
-    printf("\n\nTIME - %d\n\n", Dn);
+    //printf("\n\nTIME - %d\n\n", Dn);
 
     //Segundo, processar o evento -> Atualizar a tabela de encaminhamento
     source_node = updateDestToNode(orig_node, event_head->message, event_head->type);
     if (source_node != NULL){
-        printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d | Custo: %d]\n", orig_node->id,source_node->dest_id, source_node->chosen_neighbour_id, source_node->type, source_node->cost); 
+        //printf("Tabela de encaminhamento do nó %d: [Nó de destino:%d| Nó vizinho: %d | Type: %d | Custo: %d]\n", orig_node->id,source_node->dest_id, source_node->chosen_neighbour_id, source_node->type, source_node->cost); 
         event_head = RepAnnouncement(event_head, orig_node, source_node);
     }
     else{
-        printf("Nó não atualizou a sua tabela de encaminhamento -> Logo não deve anunciar nada, logo não criamos eventos\n");
+        //printf("Nó não atualizou a sua tabela de encaminhamento -> Logo não deve anunciar nada, logo não criamos eventos\n");
     }
 
     return event_head;

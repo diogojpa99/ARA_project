@@ -33,8 +33,22 @@ plt.legend()
 
 '''
 
+costs = np.sort(costs)
+y = np.arange(1, len(costs)+1) / len(costs)
+plt.plot(costs,y)
+plt.margins(0.02)
+plt.show()
+
+plt.hist(costs)
+plt.show()
+
+plt.hist(types)
+plt.show()
+
+'''
 types = np.sort(types)
-
-y = np.arrange(1, len(types)+1) / len(types)
-
-#plt.plot(x,y,marker='.',
+y = np.arange(1, len(types)+1) / len(types)
+plt.plot(types,y)
+plt.margins(0.02)
+plt.show()
+'''

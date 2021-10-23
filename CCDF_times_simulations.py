@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+                    ## TIMES OF SIMULATIONS ##
+
+
 data = np.loadtxt('times_simulations.txt')
-
-# initializing subplots
-
 
 # getting data of the histogram
 count, bins_count = np.histogram(data, bins=10)
@@ -22,7 +22,7 @@ pdf = count / sum(count)
 cdf = np.cumsum(pdf)
 ccdf = 1 - cdf 
 
-# plotting PDF and CDF
+# plotting CDF and CCDF
 #plt.plot(bins_count[1:], pdf, color = "red", label = "PDF")
 plt.plot(bins_count[1:], cdf, color = 'green', label = "CDF")
 plt.plot(bins_count[1:], ccdf, color = "blue", label = "ccdf")
