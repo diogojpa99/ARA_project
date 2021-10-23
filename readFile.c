@@ -189,7 +189,7 @@ void write_types_costs_routs(Nodes *nodes_head, int mode)
     }else{
         for(nodes_auxT = nodes_head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
             for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
-                if(dest_auxT->cost != INFINITE) 
+                if(dest_auxT->cost != INFINITE && dest_auxT->cost != 0) 
                     fprintf(fd,"%d %d\n", dest_auxT->type, dest_auxT->cost);
             }
         }
@@ -204,13 +204,13 @@ void InteractiveMode(Nodes *nodes_head){
     Nodes *node;
     DestNode *dest;
     int source_node_id, dest_node_id;
-    char buffer_source[128], buffer_dest[128];
+    char buffer_source[128], buffer_dest[128], garbage[128];
 
     printf("\nWelcome to interactive mode!\n");
 
     printf("Please insert source node: "); fflush(stdout);
     if(fgets(buffer_source, 128, stdin)!=NULL){
-        while(sscanf(buffer_source, "%d", &source_node_id)!=1){
+        while(sscanf(buffer_source, "%d%s", &source_node_id, garbage)!=1){
             printf("Please insert an integer: "); fflush(stdout);
             fgets(buffer_source, 128, stdin);
         }
@@ -218,7 +218,7 @@ void InteractiveMode(Nodes *nodes_head){
             printf("Sorry but that source node does not exists in this network\n"); 
             printf("Please insert source node: "); fflush(stdout);
             if(fgets(buffer_source, 128, stdin)!=NULL){
-                while(sscanf(buffer_source, "%d", &source_node_id)!=1){
+                while(sscanf(buffer_source, "%d%s", &source_node_id, garbage)!=1){
                     printf("Please insert an integer: "); fflush(stdout);
                     fgets(buffer_source, 128, stdin);
                 }
