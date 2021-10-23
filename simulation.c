@@ -27,14 +27,14 @@ void simulations(Nodes *nodes_head, Event *event_head){
     }else{
         auxT = nodes_head;
         Dn = 0;
-        printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
+        //printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         processCalendar(event_head, auxT, nodes_head);
         times_simulations[0] = Dn;
 
         while( auxT->next != NULL){
             Dn = 0;
             auxT = auxT->next;
-            printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
+            //printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             processCalendar(event_head, auxT, nodes_head);
             times_simulations[i] = Dn;
             i++;

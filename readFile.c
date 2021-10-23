@@ -79,32 +79,33 @@ int main(int argc, char **argv)
     {
         case interactive_sim:
             /*tem que dar como output o tipo e o comprimento da rota entre um destino e uma source dados na funcao commandLineValidation*/
-            printf("\n\n ------------ The simulation has started ------------ \n");
+            printf("\n ------------ The simulation has started ------------ \n");
             simulations(nodes_head, event_head);
-            Print_List_of_Destinations(nodes_head, simulation);
+            //Print_List_of_Destinations(nodes_head, simulation);
+            InteractiveMode(nodes_head);
 
             break;
         case simulation:
-            printf("\n\n ------------ The simulation has started ------------ \n");
+            printf("\n ------------ The simulation has started ------------ \n");
             simulations(nodes_head, event_head);
-            Print_List_of_Destinations(nodes_head, simulation);
+            //Print_List_of_Destinations(nodes_head, simulation);
             write_times_simulations();
             write_types_costs_routs(nodes_head);
             break;
 
         case interactive_algo:
-            printf("\n -------------- Algorithm ------------------------- \n");
+            printf("\n ------------ The algorithm has started ------------ \n");
             clearAllDest(nodes_head);
             Algorithm(nodes_head);
-            Print_List_of_Destinations(nodes_head, algorithm);
-            //Print_List_of_Adjacencies(nodes_head);
+            //Print_List_of_Destinations(nodes_head, algorithm);
+            InteractiveMode(nodes_head);
 
             break;
         case algorithm:
-            printf("\n -------------- Algorithm ------------------------- \n");
+            printf("\n ------------ The algorithm has started ------------ \n");
             clearAllDest(nodes_head);
             Algorithm(nodes_head);
-            Print_List_of_Destinations(nodes_head, algorithm);
+            //Print_List_of_Destinations(nodes_head, algorithm);
 
             break;
         default:
@@ -185,6 +186,39 @@ void write_types_costs_routs(Nodes *nodes_head)
         }
     }
     fclose(fd);
+
+    return;
+}
+
+void InteractiveMode(Nodes *nodes_head){
+
+    Nodes *node;
+    DestNode *dest;
+    int source_node_id, dest_node_id;
+    char buffer[128];
+
+    printf("\nWelcome to interactive mode!\n");
+
+    printf("Please insert source node: "); fflush(stdout);
+    if(fgets(buffer, 128, stdin)!=NULL){
+        if(sscanf(buffer, "%d", &source_node_id)==1){
+            if ((node = searchNodesList(nodes_head,source_node_id)) == NULL){
+                printf("Sorry but that source node does not exists in this network\n"); 
+             }
+        }
+    }
+
+    printf("Please insert destiny node: "); fflush(stdout);
+    while ( scanf("%d",&dest_node_id) != 1) {
+        printf("Please insert only the destiny node\n");
+        scanf("%d",&dest_node_id);
+    }
+
+    if( ((dest = searchDestiny(node->destHead,dest_node_id)) == NULL) || (dest->type==1000000)){
+        printf("The source node %d can't reach that destiny \n", source_node_id);
+    } else{
+        printf("Node %d can reach node %d with: TYPE:%d  &  COST:%d\n", source_node_id, dest_node_id,dest->type,dest->cost);
+    }
 
     return;
 }
