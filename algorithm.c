@@ -11,11 +11,11 @@ void Algorithm(Nodes *nodes_head) {
         return;
     }else{
         auxT = nodes_head;
-        printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
+        //printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         ReverseDijkstra( nodes_head, auxT);
         while( auxT->next != NULL){
             auxT = auxT->next;
-            printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
+            //printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             ReverseDijkstra( nodes_head, auxT);
         }
     }
