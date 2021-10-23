@@ -23,40 +23,26 @@ int main(int argc, char **argv)
     Nodes *nodes_head = NULL;
     Event *event_head = NULL;
     
+    char file[128];
 
-    
-    
-    fp = fopen("Mini_Internet.tsv","r");
-    srand(time(0));
 
-    if(fp == NULL){
-        perror("Error opening the text file");
-        return(-1);
-    }
-
-    while( fscanf(fp, "%d %d %d\n", &tail, &head, &type) != EOF ){
-        nodes_head = createGraph(nodes_head, tail, head, type);
-    }
-
-    //Por os Adjacentes a apontar para a posição deles na lista de nós
-    nodes_head = AdjToNode(nodes_head);
 
     //validacao da linha de comandos
-    while((opt = getopt(argc, argv, "m:")) != -1){
+    while((opt = getopt(argc, argv, "m:i:")) != -1){
         switch (opt)
         {
         case 'm':
             strcpy(buffer, optarg);
             if(strcmp(buffer, "interactive_sim") == 0){
-                commandLineValidation(argc, argv, &input_origin_id, &input_dest_id, nodes_head);
+                commandLineValidation(argc, argv, &input_origin_id, &input_dest_id);
                 mode = interactive_sim;
 
             }else if(strcmp(buffer, "interactive_algo") == 0){
-                commandLineValidation(argc, argv, &input_origin_id, &input_dest_id, nodes_head);
+                commandLineValidation(argc, argv, &input_origin_id, &input_dest_id);
                 mode = interactive_algo;
 
             }else if(strcmp(buffer, "help") == 0){
-                commandLineValidation(argc, argv, &input_origin_id, &input_dest_id, nodes_head);
+                commandLineValidation(argc, argv, &input_origin_id, &input_dest_id);
 
             }else if(strcmp(buffer, "simulation") == 0){
                 mode = simulation;
@@ -70,9 +56,25 @@ int main(int argc, char **argv)
                 exit(0);
             }
             break;
+        case 'i':
+            strcpy(file, argv[4]);
         }
     }
     
+    fp = fopen(file,"r");
+
+    srand(time(0));
+
+    if(fp == NULL){
+        perror("Error opening the text file");
+        return(-1);
+    }
+
+    while( fscanf(fp, "%d %d %d\n", &tail, &head, &type) != EOF ){
+        nodes_head = createGraph(nodes_head, tail, head, type);
+    }
+    //Por os Adjacentes a apontar para a posição deles na lista de nós
+    nodes_head = AdjToNode(nodes_head);
 
 
     switch (mode)
@@ -82,14 +84,16 @@ int main(int argc, char **argv)
             printf("\n\n ------------ The simulation has started ------------ \n");
             simulations(nodes_head, event_head);
             Print_List_of_Destinations(nodes_head, simulation);
+            write_times();
+            write_types_costs_routs(nodes_head, interactive_sim);
 
             break;
         case simulation:
             printf("\n\n ------------ The simulation has started ------------ \n");
             simulations(nodes_head, event_head);
             Print_List_of_Destinations(nodes_head, simulation);
-            write_times_simulations();
-            write_types_costs_routs(nodes_head);
+            write_times();
+            write_types_costs_routs(nodes_head, simulation);
             break;
 
         case interactive_algo:
@@ -97,6 +101,8 @@ int main(int argc, char **argv)
             clearAllDest(nodes_head);
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
+            write_types_costs_routs(nodes_head, interactive_algo);
+
             //Print_List_of_Adjacencies(nodes_head);
 
             break;
@@ -105,6 +111,7 @@ int main(int argc, char **argv)
             clearAllDest(nodes_head);
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
+            write_types_costs_routs(nodes_head, algorithm);
 
             break;
         default:
@@ -122,20 +129,17 @@ int main(int argc, char **argv)
     return 0;
 }
 
-void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, Nodes *nodes_head)
+void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id)
 {
     char garbage[128], buffer[128];
 
     if( argc == 3 && (strcmp(argv[2], "help") == 0))
     {
-        printf("A aplicação graph é invocada com o comando\n\tgraph -m <interactive_sim/interactive_algo/algorithm/simulation/help>\n");
+        printf("A aplicação graph é invocada com o comando\n\tgraph -m <interactive_sim/interactive_algo/algorithm/simulation/help> -i<net file>\n");
         exit(1);
     }    
     else if(argc == 3 && (strcmp(argv[2], "interactive") == 0 || strcmp(argv[2], "algorithm") == 0))
     {
-        printf("List of nodes:\n");
-        Print_List_of_Nodes(nodes_head);
-        printf("\n");
         printf("Choose an origin node and a destiny node: ");
         fgets(buffer, 128, stdin);
         
@@ -150,13 +154,13 @@ void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id, 
 
 
 
-void write_times_simulations()
+void write_times()
 {
     FILE *fp;
     int i;
 
-
     fp = fopen("times_simulations.txt","w");
+    
 
     for(i = 0; i < nr_nodes; i++){
         fprintf(fp, "%d\n", times_simulations[i]);
@@ -165,13 +169,18 @@ void write_times_simulations()
     
 }
 
-void write_types_costs_routs(Nodes *nodes_head)
+void write_types_costs_routs(Nodes *nodes_head, int mode)
 {
     FILE *fd;
     Nodes *nodes_auxT;
     DestNode *dest_auxT;
 
-    fd = fopen("types_costs_simulations.txt","w");
+
+    if(mode == 2 || mode == 3){
+        fd = fopen("types_costs_simulations.txt","w");
+    }else if(mode ==4 || mode == 5){
+        fd = fopen("types_costs_algorithm.txt","w");
+    }
 
     
 
@@ -180,7 +189,8 @@ void write_types_costs_routs(Nodes *nodes_head)
     }else{
         for(nodes_auxT = nodes_head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
             for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
-                fprintf(fd,"%d %d\n", dest_auxT->type, dest_auxT->cost);  
+                if(dest_auxT->cost != INFINITE) 
+                    fprintf(fd,"%d %d\n", dest_auxT->type, dest_auxT->cost);
             }
         }
     }
