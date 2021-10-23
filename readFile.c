@@ -194,45 +194,43 @@ void InteractiveMode(Nodes *nodes_head){
 
     Nodes *node;
     DestNode *dest;
-    int source_node_id, dest_node_id, i;
-    char buffer[128];
+    int source_node_id, dest_node_id;
+    char buffer_source[128], buffer_dest[128];
 
     printf("\nWelcome to interactive mode!\n");
 
     printf("Please insert source node: "); fflush(stdout);
-    if(fgets(buffer, 128, stdin)!=NULL){
-        while(sscanf(buffer, "%d", &source_node_id)!=1){
+    if(fgets(buffer_source, 128, stdin)!=NULL){
+        while(sscanf(buffer_source, "%d", &source_node_id)!=1){
             printf("Please insert an integer: "); fflush(stdout);
-            fgets(buffer, 128, stdin);
+            fgets(buffer_source, 128, stdin);
         }
         if ((node = searchNodesList(nodes_head,source_node_id)) == NULL){
             printf("Sorry but that source node does not exists in this network\n"); 
             printf("Please insert source node: "); fflush(stdout);
-            if(fgets(buffer, 128, stdin)!=NULL){
-                while(sscanf(buffer, "%d", &source_node_id)!=1){
+            if(fgets(buffer_source, 128, stdin)!=NULL){
+                while(sscanf(buffer_source, "%d", &source_node_id)!=1){
                     printf("Please insert an integer: "); fflush(stdout);
-                    fgets(buffer, 128, stdin);
+                    fgets(buffer_source, 128, stdin);
                 }
             }
         }
     }
 
-    for(i=0;i<127;i++){
-        buffer[i]='\0';
-    }
+    fflush(stdin);
 
     printf("Please insert destiny node: "); fflush(stdout);
-    if(fgets(buffer, 128, stdin)!=NULL){
-        if (sscanf(buffer, "%d", &dest_node_id)==1){
-            printf("%d", dest_node_id);
-            if( ((dest = searchDestiny(node->destHead,dest_node_id)) == NULL) || (dest->type==1000000)){
-                printf("The source node %d can't reach that destiny \n", source_node_id);
-            } else{
-                printf("Node %d can reach node %d with: TYPE:%d  &  COST:%d\n", source_node_id, dest_node_id,dest->type,dest->cost);
-            }
-        }else{
-            printf("Please insert an integer next time arround\n");
+    if(fgets(buffer_dest, 128, stdin)!=NULL){
+        while(sscanf(buffer_dest, "%d", &dest_node_id)!=1){
+            printf("Please insert an integer: "); fflush(stdout);
+            fgets(buffer_dest, 128, stdin);
         }
+    }
+
+    if( ((dest = searchDestiny(node->destHead,dest_node_id)) == NULL) || (dest->type==1000000)){
+        printf("The source node %d can't reach that destiny \n", source_node_id);
+    } else{
+        printf("Node %d can reach node %d with: TYPE:%d  &  COST:%d\n", source_node_id, dest_node_id,dest->type,dest->cost);
     }
 
     return;
