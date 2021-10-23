@@ -103,7 +103,6 @@ int main(int argc, char **argv)
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
             write_types_costs_routs(nodes_head, interactive_algo);
-
             InteractiveMode(nodes_head);
 
             break;
