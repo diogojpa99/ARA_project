@@ -81,7 +81,7 @@ int main(int argc, char **argv)
     {
         case interactive_sim:
             /*tem que dar como output o tipo e o comprimento da rota entre um destino e uma source dados na funcao commandLineValidation*/
-            printf("------------ The simulation has started ------------ \n");
+            printf("\n------------ The simulation has started ------------ \n");
             simulations(nodes_head, event_head);
             Print_List_of_Destinations(nodes_head, simulation);
             write_times();
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 
             break;
         case simulation:
-            printf("------------ The simulation has started ------------ \n");
+            printf("\n------------ The simulation has started ------------ \n");
             simulations(nodes_head, event_head);
             Print_List_of_Destinations(nodes_head, simulation);
             write_times();
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
             break;
 
         case interactive_algo:
-            printf("------------ The algorithm has started ------------ \n");
+            printf("\n------------ The algorithm has started ------------ \n");
             clearAllDest(nodes_head);
             Algorithm(nodes_head);
             Print_List_of_Destinations(nodes_head, algorithm);
@@ -107,10 +107,10 @@ int main(int argc, char **argv)
 
             break;
         case algorithm:
-            printf("------------ The algorithm has started ------------ \n");
+            printf("\n------------ The algorithm has started ------------ \n");
             clearAllDest(nodes_head);
             Algorithm(nodes_head);
-            printf("------------ The algorithm has Ended -------------- \n");
+            printf("\n------------ The algorithm has Ended -------------- \n");
             Print_List_of_Destinations(nodes_head, algorithm);
             write_types_costs_routs(nodes_head, algorithm);
 
