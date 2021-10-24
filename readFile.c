@@ -132,24 +132,21 @@ int main(int argc, char **argv)
 
 void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id)
 {
-    char garbage[128], buffer[128];
+    
 
-    if( argc == 3 && (strcmp(argv[2], "help") == 0))
+    if(argc != 5)
+    {
+        printf("Error: Bad arguments in program call\n");
+        printf("Type: ./graph -m help\n");
+        exit(0);
+    }
+    if( argc == 5 && (strcmp(argv[2], "help") == 0))
     {
         printf("A aplicação graph é invocada com o comando\n\tgraph -m <interactive_sim/interactive_algo/algorithm/simulation/help> -i<net file>\n");
         exit(1);
-    }    
-    else if(argc == 3 && (strcmp(argv[2], "interactive") == 0 || strcmp(argv[2], "algorithm") == 0))
-    {
-        printf("Choose an origin node and a destiny node: ");
-        fgets(buffer, 128, stdin);
-        
-        if(sscanf(buffer, "%d %d%s", origin_id, dest_id , garbage) != 2){
-            printf("Error: Bad <origin_id> <dest_id>\n");
-        }
-        
     }
-    
+
+    return;
 }
 
 
