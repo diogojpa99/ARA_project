@@ -23,4 +23,6 @@ void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type);
 
 void PrintQ(Queue *Q);
 
+FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd);
+
 #endif //READFILE INCLUDED
