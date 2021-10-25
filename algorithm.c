@@ -34,6 +34,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
     Q_1=InsertQ(destiny_node, Q_1);
     
     while ( (Q_1 != NULL) || (Q_2 != NULL) || (Q_3 != NULL)){
+
         while (Q_1 != NULL){
             Q=Q_1;
             Q_1=Q_1->next;
@@ -49,14 +50,14 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
             free(Q);
         }
 
-        while (Q_2 != NULL){
+        while ( (Q_2 != NULL) && (Q_1 ==NULL)){
             Q=Q_2;
             Q_2=Q_2->next;
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);
             free(Q);
         }
 
-        while (Q_3 != NULL){
+        while ( (Q_3 != NULL) && (Q_1 == NULL) && (Q_2 ==NULL) ){
             Q=Q_3;
             Q_3=Q_3->next;
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);  

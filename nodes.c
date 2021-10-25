@@ -505,9 +505,6 @@ void freeGraphNodes(Nodes *nodes_head)
 {
     Nodes *auxH = NULL; 
     Adj *aux_adj = NULL;
-    DestNode *aux_dest = NULL;
-
-    
 
     if(nodes_head == NULL)
     {
@@ -524,12 +521,6 @@ void freeGraphNodes(Nodes *nodes_head)
                 aux_adj = auxH->adjHead;
                 auxH->adjHead = auxH->adjHead->next; 
                 free(aux_adj);
-            }
-            while(auxH->destHead != NULL)
-            {
-                aux_dest = auxH->destHead;
-                auxH->destHead = auxH->destHead->next_dest; 
-                free(aux_dest);
             }
             free(auxH);
         }
@@ -559,6 +550,17 @@ void clearDestinys(DestNode *list){
 
   if(list!=NULL){
     clearDestinys(list->next_dest);
+    clearNeighbours(list->neighbours_head);
+    free(list);
+  }
+
+  return;
+}
+
+void clearNeighbours(Neighbours *list){
+
+  if(list!=NULL){
+    clearNeighbours(list->next_neighbour);
     free(list);
   }
 
