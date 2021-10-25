@@ -154,7 +154,7 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3){
     if(Q == NULL){
         return Q;
     }else{
-        if((Q->node->destHead->type != Q->type) && (Q->node->destHead->cost != Q->cost)){
+        if((Q->node->destHead->type != Q->type) || (Q->node->destHead->cost != Q->cost)){ // Deve ser || ou && ?
             return Q;
         }
         else{
