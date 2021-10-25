@@ -34,7 +34,7 @@ plt.legend()
 '''
 
 costs = np.sort(costs)
-y = np.arange(1, len(costs)+1) / len(costs)
+y = 1 - np.arange(1, len(costs)+1) / len(costs)
 plt.plot(costs,y)
 plt.margins(0.02)
 plt.show()

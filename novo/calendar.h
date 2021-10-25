@@ -2,8 +2,8 @@
 #define CALENDAR_INCLUDED
 
 #include "readFile.h"
-#include "nodes.h"
-#include "simulation.h"
+
+
 
 
 
@@ -19,7 +19,7 @@ void printEvents(Event *listHead);
 
 void processCalendar(Event *events_Head, Nodes *woken_node, Nodes *nodes_head);
 
-Event *processEvent(Event *event_head, int process_node_id , Nodes *nodes_head);
+Event *processEvent(Event *event_head, Nodes *process_node , Nodes *nodes_head);
 
 Event *popEvent(Event *event_head);
 

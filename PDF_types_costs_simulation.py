@@ -9,8 +9,8 @@ import pandas as pd
                     ## TYPES OF ROUTES
 
 data_types_costs = np.loadtxt('types_costs_simulations.txt')
-data_types = np.copy(data_types_costs[:,0])
-data_costs = np.copy(data_types_costs[:,1])
+data_types = np.sort(np.copy(data_types_costs[:,0]))
+data_costs = np.sort(np.copy(data_types_costs[:,1]))
 
 """"Histogram"""
 # getting data of the histogram
