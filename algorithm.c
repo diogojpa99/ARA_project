@@ -35,7 +35,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
     
     while ( (Q_1 != NULL) || (Q_2 != NULL) || (Q_3 != NULL)){
 
-        while (Q_1 != NULL){
+        if (Q_1 != NULL){
             Q=Q_1;
             Q_1=Q_1->next;
             //retirar o nó que está na cabeça da pilhaS
@@ -50,14 +50,14 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
             free(Q);
         }
 
-        while ( (Q_2 != NULL) && (Q_1 ==NULL)){
+        if ( (Q_2 != NULL) && (Q_1 == NULL)){
             Q=Q_2;
             Q_2=Q_2->next;
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);
             free(Q);
         }
 
-        while ( (Q_3 != NULL) && (Q_1 == NULL) && (Q_2 ==NULL) ){
+        if ( (Q_3 != NULL) && (Q_1 == NULL) && (Q_2 == NULL) ){
             Q=Q_3;
             Q_3=Q_3->next;
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);  
