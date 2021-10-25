@@ -11,11 +11,11 @@ void Algorithm(Nodes *nodes_head) {
         return;
     }else{
         auxT = nodes_head;
-        //printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
+        printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         ReverseDijkstra( nodes_head, auxT);
         while( auxT->next != NULL){
             auxT = auxT->next;
-            //printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
+            printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             ReverseDijkstra( nodes_head, auxT);
         }
     }
@@ -40,7 +40,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
             Q_1=Q_1->next;
             //retirar o nó que está na cabeça da pilhaS
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
-       
+            printf("Node that's being removed from the Q_1: Node_id:%d | Type:%d | Cost:%d \n",Q->node_id,Q->type,Q->cost);
             //Enquanto a lista de adjacências não estiver vazia
             //Relaxation of the link uv
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
@@ -48,20 +48,34 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);
             //Depois libertamos a cabeça da pilha atual e metemos a nova cabeça
             free(Q);
+            printf("Processar Q_1\n");
+            PrintQ(Q_1);
+            PrintQ(Q_2);
+            PrintQ(Q_3);
         }
 
         if ( (Q_2 != NULL) && (Q_1 == NULL)){
             Q=Q_2;
             Q_2=Q_2->next;
+            printf("Node that's being removed from the Q_2: Node_id:%d | Type:%d | Cost:%d \n",Q->node_id,Q->type,Q->cost);
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);
             free(Q);
+            printf("Processar Q_2\n");
+            PrintQ(Q_1);
+            PrintQ(Q_2);
+            PrintQ(Q_3);
         }
 
         if ( (Q_3 != NULL) && (Q_1 == NULL) && (Q_2 == NULL) ){
             Q=Q_3;
             Q_3=Q_3->next;
+            printf("Node that's being removed from the Q_3: Node_id:%d | Type:%d | Cost:%d \n",Q->node_id,Q->type,Q->cost);
             Q=Relaxation(Q, &Q_1, &Q_2, &Q_3);  
             free(Q);
+            printf("Processar Q_3\n");
+            PrintQ(Q_1);
+            PrintQ(Q_2);
+            PrintQ(Q_3);
         }
     }
 
@@ -101,7 +115,7 @@ Queue *InsertQ(Nodes *node, Queue *Q){
             new_element->next=Q;
             Q=new_element;
         }
-        while((auxT != NULL) && (new_element->cost > Q->cost)){
+        while((auxT != NULL) && (new_element->cost > auxT->cost)){
                 auxH = auxT;
                 auxT = auxT->next;
         }
@@ -155,16 +169,23 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3){
         return Q;
     }else{
         if((Q->node->destHead->type != Q->type) || (Q->node->destHead->cost != Q->cost)){ // Deve ser || ou && ?
+            printf(" This is not going to be processed: Node_id:%d | Type:%d | Cost:%d, because is not the most recent: Node_id:%d | Type:%d | Cost:%d\n", Q->node->id, Q->node->destHead->type, Q->node->destHead->cost,Q->node_id, Q->type,Q->cost);
             return Q;
         }
         else{
+            
+            printf(" This Node is going to be processed: Node_id:%d | Type:%d | Cost:%d\n", Q->node_id, Q->type,Q->cost);
             neighbour = Q->node->adjHead;
-            if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ) //Acho que faz sentido, mas confirmar
+            if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id) ){//Acho que faz sentido, mas confirmar
+                printf(" This Node is going to be relax: Node_id:%d\n", neighbour->id);
                 Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
+            }
             while(neighbour->next != NULL){
                 neighbour = neighbour->next;
-                if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
+                if( (Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id)){
+                    printf(" This Node is going to be relax: Node_id:%d\n", neighbour->id);
                     Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
+                }
             }
         }
     }
@@ -180,6 +201,7 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
     }
 
     if( adj_node_type < adj_node->destHead->type){
+        printf("Link was relax: Source: %d || Types: %d < %d\n",adj_node->id,adj_node_type, adj_node->destHead->type);
         adj_node->destHead->type=adj_node_type;
         adj_node->destHead->cost=Q->cost+1;
         adj_node->destHead->chosen_neighbour_id=Q->node_id;
@@ -187,6 +209,7 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
     } 
     else if(adj_node_type == adj_node->destHead->type) {
         if( (Q->cost+1) < adj_node->destHead->cost){
+            printf("Link was relax: Source: %d || Types: %d = %d || Types: %d < %d\n",adj_node->id,adj_node_type, adj_node->destHead->type, (Q->cost+1),adj_node->destHead->cost);
             adj_node->destHead->type=adj_node_type;
             adj_node->destHead->cost=Q->cost+1;
             adj_node->destHead->chosen_neighbour_id=Q->node_id;
@@ -200,9 +223,10 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
 void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type)
 {
 
+    printf("Node %d is going to be insert in Queue %d\n",node->id,type);
     if( type == 1){
         *Q1=InsertQ(node, *Q1);
-    } else if (type ==2){
+    } else if (type == 2){
         *Q2=InsertQ(node, *Q2);
     } else if (type == 3){
         *Q3=InsertQ(node, *Q3);
@@ -211,11 +235,23 @@ void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type)
     return;
 }
 
-/**
 void PrintQ(Queue *Q){
 
     Queue *auxT;
 
+    if(Q == NULL){
+        return;
+    }else{
+        printf("-------- Q_%d ---------\n", Q->type);
+        auxT=Q;
+        printf("Q_%d: Node:%d | Cost:%d\n", Q->type,Q->node_id,Q->cost);
+        auxT=auxT->next;
+        while( auxT != NULL){
+            printf("Q_%d: Node:%d | Cost:%d\n", auxT->type, auxT->node_id, auxT->cost);
+            auxT=auxT->next;
+        }
+        printf("-------- Q_%d ---------\n", Q->type);
+    }
 
     return;
-}**/
+}

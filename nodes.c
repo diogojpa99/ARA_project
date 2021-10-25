@@ -489,8 +489,8 @@ void Print_List_of_Destinations(Nodes *nodes_Head, int mode)
             fprintf(fd, "\n[%d]->", nodes_auxT->id);   
             for(dest_auxT = nodes_auxT->destHead; dest_auxT != NULL; dest_auxT = dest_auxT->next_dest) {
                 if(dest_auxT->chosen_neighbour_id != 1000000){
-                    fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
-                    //fprintf(fd, "[dest_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id , dest_auxT->type,dest_auxT->cost);
+                    //fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
+                    fprintf(fd, "[dest_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id , dest_auxT->type,dest_auxT->cost);
                 }
             }
             fprintf(fd, "NULL\n");

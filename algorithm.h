@@ -21,4 +21,6 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
 
 void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type);
 
+void PrintQ(Queue *Q);
+
 #endif //READFILE INCLUDED
