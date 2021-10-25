@@ -40,7 +40,9 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
             Q_1=Q_1->next;
             //retirar o nó que está na cabeça da pilhaS
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
+
             //printf("Node that's being removed from the Q_1: Node_id:%d | Type:%d | Cost:%d \n",Q->node_id,Q->type,Q->cost);
+            
             //Enquanto a lista de adjacências não estiver vazia
             //Relaxation of the link uv
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
