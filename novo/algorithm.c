@@ -7,8 +7,14 @@ void Algorithm(Nodes *nodes_head) {
 
     Nodes *auxT = NULL; 
     FILE *fd;
-
+    
+    /*
     if((fd = fopen("dest_algorithmNOVO.txt", "w")) == NULL){
+        printf("Error: Could not open file \n");
+        exit(0);
+    }
+    */
+    if((fd = fopen("types_costs_algorithm.txt","w")) == NULL){
         printf("Error: Could not open file \n");
         exit(0);
     }
@@ -20,12 +26,12 @@ void Algorithm(Nodes *nodes_head) {
         printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         initAlgorithm(nodes_head, auxT);
         ReverseDijkstra( nodes_head, auxT);
-        Print_Destinations(nodes_head, fd);
+        Print_CCDF(nodes_head, fd);
         while( auxT->next != NULL){
             auxT = auxT->next;
             printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             ReverseDijkstra( nodes_head, auxT);
-            Print_Destinations(nodes_head, fd);
+            Print_CCDF(nodes_head, fd);
         }
     }
 
@@ -306,6 +312,22 @@ FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd)
             }
         }
         fprintf(fd, "NULL\n");
+    }
+
+    return fd;
+}
+
+
+FILE *Print_CCDF(Nodes *nodes_Head, FILE *fd)
+{
+    Nodes *nodes_auxT;
+
+    if(nodes_Head==NULL){
+        return fd;
+    }else{
+        for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next){
+                fprintf(fd, "%d %d\n", nodes_auxT->destHead->type,nodes_auxT->destHead->cost);
+        }
     }
 
     return fd;

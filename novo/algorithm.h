@@ -27,4 +27,6 @@ void PrintQ(Queue *Q);
 
 FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd);
 
+FILE *Print_CCDF(Nodes *nodes_Head, FILE *fd);
+
 #endif //READFILE INCLUDED
