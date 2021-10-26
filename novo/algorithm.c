@@ -317,7 +317,7 @@ FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd)
     return fd;
 }
 
-
+// Não vamos usar
 FILE *Print_CCDF(Nodes *nodes_Head, FILE *fd)
 {
     Nodes *nodes_auxT;

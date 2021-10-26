@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
 
 
 data = np.loadtxt("types_costs_algorithm.txt")
@@ -8,14 +10,34 @@ types=data[:,0]
 costs=data[:,1]
 
 i=0
-
-print(types.max())
+index_zeros=[]
+index_infinite=[]
 
 while i< len(types):
     if types[i] == 0:
-        types = np.delete(types, i)
-        costs = np.delete(costs, i)
+        index_zeros.append(i)
+    if costs[i] == 1000000:
+        index_infinite.append(i)
     i +=1
+
+print(index_infinite)
+print(index_zeros)
+
+types=pd.DataFrame(types)
+costs=pd.DataFrame(costs)
+
+#Remover zeros do types
+types=types.drop(index_zeros)
+
+#Remover zeros e infinites do cost
+costs=costs.drop(index_zeros)
+costs=costs.drop(index_infinite)
+
+#Já temos os vetores limpos
+types = types.to_numpy()
+costs = costs.to_numpy()
+
+print(costs.max(), costs.min())
 
 '''
 count, bins_count = np.histogram(types, bins=20, range=(types.min(),types.max()))
