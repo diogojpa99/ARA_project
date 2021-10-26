@@ -571,11 +571,15 @@ Nodes *AdjToNode(Nodes *listHead){
     
     Nodes *nodes_auxT, *auxT;
     Adj *adj_auxT;
+    int nr_nodes = 0;
+
 
     if(listHead==NULL){
         return listHead;
     }else{
         for(nodes_auxT = listHead; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next) {
+            printf("\nNODE_id: %d\n", nodes_auxT->id); 
+            nr_nodes++;
             for(adj_auxT = nodes_auxT->adjHead; adj_auxT != NULL; adj_auxT = adj_auxT->next) {
                 if(listHead == NULL){
                     return NULL;
@@ -592,6 +596,7 @@ Nodes *AdjToNode(Nodes *listHead){
             }
         }
     }
+    printf("\nNR NODES: %d", nr_nodes); fflush(stdout);
     return listHead;
 }
 

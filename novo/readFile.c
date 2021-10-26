@@ -107,10 +107,10 @@ int main(int argc, char **argv)
             break;
         case algorithm:
             printf("------------ The algorithm has started ------------ \n");
-            Algorithm(nodes_head);
+            //Algorithm(nodes_head);
             printf("------------ The algorithm has Ended -------------- \n");
-            Print_List_of_Destinations(nodes_head, algorithm);
-            write_types_costs_routs(nodes_head, algorithm);
+            //Print_List_of_Destinations(nodes_head, algorithm);
+            //write_types_costs_routs(nodes_head, algorithm);
 
             break;
         default:
