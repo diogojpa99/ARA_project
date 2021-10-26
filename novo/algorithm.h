@@ -29,4 +29,6 @@ FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd);
 
 FILE *Print_CCDF(Nodes *nodes_Head, FILE *fd);
 
+void UpdateTypesCosts(Nodes *nodes_head);
+
 #endif //READFILE INCLUDED

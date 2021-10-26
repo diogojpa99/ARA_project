@@ -8,6 +8,9 @@
 int Dn = 0;
 int *times_simulations = NULL;
 int nr_nodes = 0;
+int *costs = NULL;
+int *types = NULL;
+
 
 int main(int argc, char **argv)
 {
@@ -24,6 +27,9 @@ int main(int argc, char **argv)
     Event *event_head = NULL;
     
     char file[128];
+
+    costs = (int*)calloc(1024, sizeof(int));
+    types = (int*)calloc(4, sizeof(int));
 
 
 
@@ -98,21 +104,19 @@ int main(int argc, char **argv)
             break;
 
         case interactive_algo:
-            printf("------------ The algorithm has started ------------ \n");
+            //InteractiveMode(nodes_head);
             Algorithm(nodes_head);
-            Print_List_of_Destinations(nodes_head, algorithm);
-            write_types_costs_routs(nodes_head, interactive_algo);
-            InteractiveMode(nodes_head);
-
+            //Print_List_of_Destinations(nodes_head, algorithm);
+            //write_types_costs_routs(nodes_head, interactive_algo);
             break;
+
         case algorithm:
             printf("------------ The algorithm has started ------------ \n");
             Algorithm(nodes_head);
             printf("------------ The algorithm has Ended -------------- \n");
-            //Print_List_of_Destinations(nodes_head, algorithm);
-            //write_types_costs_routs(nodes_head, algorithm);
-
+            writeStatistics();
             break;
+
         default:
             printf("Error: Bad arguments in program call\n");
             printf("Type: ./graph -m help\n");
@@ -144,6 +148,10 @@ void commandLineValidation(int argc, char **argv, int *origin_id, int *dest_id)
         printf("A aplicação graph é invocada com o comando\n\tgraph -m <interactive_sim/interactive_algo/algorithm/simulation/help> -i<net file>\n");
         exit(1);
     }
+
+
+    free(costs);
+    free(types);
 
     return;
 }
@@ -239,5 +247,36 @@ void InteractiveMode(Nodes *nodes_head){
         printf("Node %d can reach node %d with: TYPE:%d  &  COST:%d\n", source_node_id, dest_node_id,dest->type,dest->cost);
     }
 
+    return;
+}
+
+
+void writeStatistics(){
+
+    FILE *fd_t, *fd_c;
+    int i;
+
+    costs[0]=0;
+       
+    if((fd_t = fopen("types_algorithm.txt","w")) == NULL){
+        printf("Error: Could not open file \n");
+        exit(0);
+    }
+
+    if((fd_c = fopen("costs_algorithm.txt","w")) == NULL){
+        printf("Error: Could not open file \n");
+        exit(0);
+    }
+
+    for(i=0; i<4; i++){
+        fprintf(fd_t,"%d\n", types[i]);
+    }
+
+    for(i=0; i<1024; i++){
+        fprintf(fd_c,"%d\n", costs[i]);
+    }
+
+    fclose(fd_c);
+    fclose(fd_t);
     return;
 }
