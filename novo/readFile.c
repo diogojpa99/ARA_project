@@ -10,6 +10,7 @@ int *times_simulations = NULL;
 int nr_nodes = 0;
 int *costs = NULL;
 int *types = NULL;
+int *times_sim_count = NULL;
 
 
 int main(int argc, char **argv)

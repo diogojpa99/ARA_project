@@ -6,6 +6,7 @@
 extern int Dn;
 extern int *times_simulations;
 extern int nr_nodes;
+extern int *times_sim_count;
 
 /**********************************     Simulation      *****************************************/
 /* Vamos acordar cada nó da lista de nós, separadamente. Ou seja, primeiro acordamos um nó x e  */
@@ -21,6 +22,11 @@ void simulations(Nodes *nodes_head, Event *event_head){
     if(times_simulations == NULL){
         printf("Error: Could not allocate memory for times_simulations");
     }
+    if((times_sim_count = (int*)calloc(1024, sizeof(int))) == NULL){
+        printf("Error: Could not allocate memory for times_sim_count");
+
+    }
+    
     
     if(nodes_head == NULL){
         return;
