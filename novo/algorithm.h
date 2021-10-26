@@ -7,7 +7,9 @@ void Algorithm(Nodes *nodes_head);
 
 void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node);
 
-Nodes *initReverseDijktra(Nodes *list_head, Nodes *destiny_node);
+Nodes *initAlgorithm(Nodes *list_head, Nodes *destiny_node);
+
+Nodes *initReverseDijkstra(Nodes *list_head, Nodes *destiny_node);
 
 Queue *InsertQ(Nodes *node, Queue *Q);
 
@@ -22,5 +24,7 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
 void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type);
 
 void PrintQ(Queue *Q);
+
+FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd);
 
 #endif //READFILE INCLUDED

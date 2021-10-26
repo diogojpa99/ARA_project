@@ -45,6 +45,8 @@ Nodes *AdjToNode(Nodes *listHead);
 
 DestNode *createDestinyAlgorithm(DestNode *dest_head, int node_id, int dest_id);
 
+DestNode *initDestinyDijkstra(DestNode *dest_head, int node_id, int dest_id);
+
 Neighbours *createNeighbourToDestiny(int *message, int type);
 
 Neighbours *insertNeighbourtOrdered(Neighbours *neighbours_head, Neighbours *neighbour_to_insert);

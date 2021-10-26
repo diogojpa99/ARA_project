@@ -110,7 +110,7 @@ int main(int argc, char **argv)
             //Algorithm(nodes_head);
             printf("------------ The algorithm has Ended -------------- \n");
             //Print_List_of_Destinations(nodes_head, algorithm);
-            //write_types_costs_routs(nodes_head, algorithm);
+            write_types_costs_routs(nodes_head, algorithm);
 
             break;
         default:

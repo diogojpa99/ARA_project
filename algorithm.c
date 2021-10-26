@@ -5,7 +5,13 @@
 
 void Algorithm(Nodes *nodes_head) {
 
-   Nodes *auxT = NULL; 
+    Nodes *auxT = NULL; 
+    FILE *fd;
+
+    if((fd = fopen("dest_algorithm.txt", "w")) == NULL){
+        printf("Error: Could not open file \n");
+        exit(0);
+    }
     
     if(nodes_head == NULL){
         return;
@@ -13,10 +19,12 @@ void Algorithm(Nodes *nodes_head) {
         auxT = nodes_head;
         printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         ReverseDijkstra( nodes_head, auxT);
+        Print_Destinations(nodes_head, fd);
         while( auxT->next != NULL){
             auxT = auxT->next;
             printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             ReverseDijkstra( nodes_head, auxT);
+            Print_Destinations(nodes_head, fd);
         }
     }
     return;
@@ -262,4 +270,24 @@ void PrintQ(Queue *Q){
     }
 
     return;
+}
+
+FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd)
+{
+    Nodes *nodes_auxT;
+
+    if(nodes_Head==NULL){
+        return fd;
+    }else{
+        fprintf(fd, "\n[Destiny_id: %d]->", nodes_Head->destHead->dest_id);
+        for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next){
+            if(nodes_auxT->destHead->chosen_neighbour_id != 1000000){
+                //fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
+                fprintf(fd, "[Orig_id:%d|type:%d|cost:%d]->", nodes_auxT->id , nodes_auxT->destHead->type,nodes_auxT->destHead->cost);
+            }
+        }
+        fprintf(fd, "NULL\n");
+    }
+
+    return fd;
 }

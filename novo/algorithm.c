@@ -5,20 +5,31 @@
 
 void Algorithm(Nodes *nodes_head) {
 
-   Nodes *auxT = NULL; 
+    Nodes *auxT = NULL; 
+    FILE *fd;
+
+    if((fd = fopen("dest_algorithmNOVO.txt", "w")) == NULL){
+        printf("Error: Could not open file \n");
+        exit(0);
+    }
     
     if(nodes_head == NULL){
         return;
     }else{
         auxT = nodes_head;
         printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
+        initAlgorithm(nodes_head, auxT);
         ReverseDijkstra( nodes_head, auxT);
+        Print_Destinations(nodes_head, fd);
         while( auxT->next != NULL){
             auxT = auxT->next;
             printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             ReverseDijkstra( nodes_head, auxT);
+            Print_Destinations(nodes_head, fd);
         }
     }
+
+    fclose(fd);
     return;
 }
 
@@ -28,7 +39,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
     /* Q_1, Q_2, Q_3 representam as cabeças de cada uma das filas ordenadas */
 
     //Iniciar o Reverse Dijkstra
-    nodes_head=initReverseDijktra(nodes_head, destiny_node);
+    nodes_head=initReverseDijkstra(nodes_head, destiny_node);
 
     //Colocar o destino na pilha com custo zero 
     Q_1=InsertQ(destiny_node, Q_1);
@@ -88,7 +99,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node){
     return;
 }
 
-Nodes *initReverseDijktra(Nodes *list_head, Nodes *destiny_node){
+Nodes *initAlgorithm(Nodes *list_head, Nodes *destiny_node){
 
     Nodes *auxT;
 
@@ -100,6 +111,24 @@ Nodes *initReverseDijktra(Nodes *list_head, Nodes *destiny_node){
         while(auxT->next !=NULL){
             auxT = auxT->next;
             auxT->destHead=createDestinyAlgorithm(auxT->destHead, auxT->id, destiny_node->id);
+        }
+    }
+
+    return list_head;
+}
+
+Nodes *initReverseDijkstra(Nodes *list_head, Nodes *destiny_node){
+
+    Nodes *auxT;
+
+    if(list_head == NULL){
+        return NULL;
+    }else{     
+        auxT = list_head;
+        auxT->destHead=initDestinyDijkstra(auxT->destHead, auxT->id, destiny_node->id);
+        while(auxT->next !=NULL){
+            auxT = auxT->next;
+            auxT->destHead=initDestinyDijkstra(auxT->destHead, auxT->id, destiny_node->id);
         }
     }
 
@@ -260,4 +289,24 @@ void PrintQ(Queue *Q){
     }
 
     return;
+}
+
+FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd)
+{
+    Nodes *nodes_auxT;
+
+    if(nodes_Head==NULL){
+        return fd;
+    }else{
+        fprintf(fd, "\n[Destiny_id: %d]->", nodes_Head->destHead->dest_id);
+        for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next){
+            if(nodes_auxT->destHead->chosen_neighbour_id != 1000000){
+                //fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
+                fprintf(fd, "[Orig_id:%d|type:%d|cost:%d]->", nodes_auxT->id , nodes_auxT->destHead->type,nodes_auxT->destHead->cost);
+            }
+        }
+        fprintf(fd, "NULL\n");
+    }
+
+    return fd;
 }

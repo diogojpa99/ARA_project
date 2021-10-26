@@ -632,3 +632,23 @@ DestNode *createDestinyAlgorithm(DestNode *dest_head, int node_id, int dest_id)
     }
     return dest_head;
 }
+
+DestNode *initDestinyDijkstra(DestNode *dest_head, int node_id, int dest_id)
+{
+
+    if(node_id == dest_id){
+        dest_head->chosen_neighbour_id = dest_id;
+        dest_head->dest_id = dest_id;
+        dest_head->cost = 0;
+        dest_head->type = 0;
+        dest_head->next_dest = NULL;
+    }else{
+        dest_head->chosen_neighbour_id = INFINITE;
+        dest_head->dest_id = dest_id;
+        dest_head->cost = INFINITE;
+        dest_head->type = INFINITE;
+        dest_head->next_dest = NULL;
+    }
+    
+    return dest_head;
+}
