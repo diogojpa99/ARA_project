@@ -4,6 +4,7 @@
 #include "simulation.h"
 
 extern int nr_nodes;
+extern int *types;
 /** createNode: Creates a new node in the Nodes List **/
 Nodes *createGraph(Nodes *listHead, int tail, int head, int type){ 
 
@@ -648,6 +649,7 @@ DestNode *initDestinyDijkstra(DestNode *dest_head, int node_id, int dest_id)
         dest_head->cost = INFINITE;
         dest_head->type = INFINITE;
         dest_head->next_dest = NULL;
+        types[0] = types[0] + 1;
     }
     
     return dest_head;

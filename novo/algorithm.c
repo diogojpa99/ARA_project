@@ -10,15 +10,15 @@ void Algorithm(Nodes *nodes_head)
 {
 
     Nodes *auxT = NULL;
-    FILE *fd;
+    //FILE *fd;
 
     costs[0] = 0;
-
+    /*
     if ((fd = fopen("dest_algorithmNOVO.txt", "w")) == NULL)
     {
         printf("Error: Could not open file \n");
         exit(0);
-    }
+    }*/
 
     if (nodes_head == NULL)
     {
@@ -30,19 +30,19 @@ void Algorithm(Nodes *nodes_head)
         printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
         initAlgorithm(nodes_head, auxT);
         ReverseDijkstra(nodes_head, auxT);
-        UpdateTypesCosts(nodes_head);
-        Print_Destinations(nodes_head,fd);
+        //UpdateTypesCosts(nodes_head);
+        //Print_Destinations(nodes_head,fd);
         while (auxT->next != NULL)
         {
             auxT = auxT->next;
             printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
             ReverseDijkstra(nodes_head, auxT);
-            UpdateTypesCosts(nodes_head);
-            Print_Destinations(nodes_head,fd);
+            //UpdateTypesCosts(nodes_head);
+            //Print_Destinations(nodes_head,fd);
         }
     }
 
-    fclose(fd);
+    //fclose(fd);
     return;
 }
 
@@ -250,7 +250,14 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3)
         }
         else
         {
-
+            //Atualização dos custos
+            if (Q->node->destHead->type != 0){
+                types[Q->node->destHead->type] = types[Q->node->destHead->type] + 1;
+                types[0] = types[0] - 1;
+            }
+            if (Q->node->destHead->cost != 0)
+                costs[Q->node->destHead->cost] = costs[Q->node->destHead->cost] + 1;
+            
             //printf(" This Node is going to be processed: Node_id:%d | Type:%d | Cost:%d\n", Q->node_id, Q->type,Q->cost);
             neighbour = Q->node->adjHead;
             if ((Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
