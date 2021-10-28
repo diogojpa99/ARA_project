@@ -11,6 +11,7 @@ void Algorithm(Nodes *nodes_head)
 
     Nodes *auxT = NULL;
     //FILE *fd;
+    int i=1;
 
     costs[0] = 0;
     /*
@@ -27,7 +28,8 @@ void Algorithm(Nodes *nodes_head)
     else
     {
         auxT = nodes_head;
-        printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
+        //printf("\n ------------ Awaken node: %d -------------- \n", nodes_head->id);
+        printf("\n ------------ %d -------------- \n", i);
         initAlgorithm(nodes_head, auxT);
         ReverseDijkstra(nodes_head, auxT);
         //UpdateTypesCosts(nodes_head);
@@ -35,10 +37,12 @@ void Algorithm(Nodes *nodes_head)
         while (auxT->next != NULL)
         {
             auxT = auxT->next;
-            printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
+            //printf("\n ------------ Awaken node: %d -------------- \n", auxT->id);
+            printf("\n ------------ %d -------------- \n", i);
             ReverseDijkstra(nodes_head, auxT);
             //UpdateTypesCosts(nodes_head);
             //Print_Destinations(nodes_head,fd);
+            i++;
         }
     }
 
@@ -197,8 +201,7 @@ Queue *InsertQ(Nodes *node, Queue *Q)
 Queue *CreateNewElement(Queue *new_element, Nodes *node)
 {
 
-    if ((new_element = (Queue *)calloc(1, sizeof(Queue))) == NULL)
-    { //Creation of a New Node
+    if ((new_element = (Queue *)calloc(1, sizeof(Queue))) == NULL){ //Creation of a New Node
         printf("Memory is full. Couldn't register request.\n");
         return NULL;
     }
