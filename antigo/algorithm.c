@@ -281,10 +281,10 @@ FILE *Print_Destinations(Nodes *nodes_Head, FILE *fd)
     }else{
         fprintf(fd, "\n[Destiny_id: %d]->", nodes_Head->destHead->dest_id);
         for(nodes_auxT = nodes_Head; nodes_auxT != NULL; nodes_auxT = nodes_auxT->next){
-            if(nodes_auxT->destHead->chosen_neighbour_id != 1000000){
+            //if(nodes_auxT->destHead->chosen_neighbour_id != 1000000){
                 //fprintf(fd, "[dest_id:%d|neihbour_id:%d|type:%d|cost:%d]->", dest_auxT->dest_id,dest_auxT->chosen_neighbour_id, dest_auxT->type,dest_auxT->cost);
                 fprintf(fd, "[Orig_id:%d|type:%d|cost:%d]->", nodes_auxT->id , nodes_auxT->destHead->type,nodes_auxT->destHead->cost);
-            }
+            //}
         }
         fprintf(fd, "NULL\n");
     }
