@@ -55,12 +55,13 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node)
 
     Queue *Q = NULL, *Q_1 = NULL, *Q_2 = NULL, *Q_3 = NULL; //Vão ser heaps ou listas normais ??
     /* Q_1, Q_2, Q_3 representam as cabeças de cada uma das filas ordenadas */
+    Queue *last_Q1=NULL, *last_Q2=NULL;
 
     //Iniciar o Reverse Dijkstra
     nodes_head = initReverseDijkstra(nodes_head, destiny_node);
 
     //Colocar o destino na pilha com custo zero
-    Q_1 = InsertQ(destiny_node, Q_1);
+    Q_1 = InsertInLast(destiny_node, Q_1,&last_Q1);
 
     while ((Q_1 != NULL) || (Q_2 != NULL) || (Q_3 != NULL))
     {
@@ -76,7 +77,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node)
             //Relaxation of the link uv
             //Ver os meus vizinhos (Mas atenção às restrições comerciais)
             //Vamos processar esse nó criar um elemento e inserir na respetiva pilha
-            Q = Relaxation(Q, &Q_1, &Q_2, &Q_3);
+            Q = Relaxation(Q, &Q_1, &Q_2, &Q_3, &last_Q1, &last_Q2);
             //Depois libertamos a cabeça da pilha atual e metemos a nova cabeça
             free(Q);
             /*
@@ -92,7 +93,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node)
             Q = Q_2;
             Q_2 = Q_2->next;
             //printf("Node that's being removed from the Q_2: Node_id:%d | Type:%d | Cost:%d \n",Q->node_id,Q->type,Q->cost);
-            Q = Relaxation(Q, &Q_1, &Q_2, &Q_3);
+            Q = Relaxation(Q, &Q_1, &Q_2, &Q_3, &last_Q1, &last_Q2);
             free(Q);
             /*
             printf("Processar Q_2\n");
@@ -107,7 +108,7 @@ void ReverseDijkstra(Nodes *nodes_head, Nodes *destiny_node)
             Q = Q_3;
             Q_3 = Q_3->next;
             //printf("Node that's being removed from the Q_3: Node_id:%d | Type:%d | Cost:%d \n",Q->node_id,Q->type,Q->cost);
-            Q = Relaxation(Q, &Q_1, &Q_2, &Q_3);
+            Q = Relaxation(Q, &Q_1, &Q_2, &Q_3, &last_Q1, &last_Q2);
             free(Q);
             /*
             printf("Processar Q_3\n");
@@ -167,7 +168,7 @@ Nodes *initReverseDijkstra(Nodes *list_head, Nodes *destiny_node)
     return list_head;
 }
 
-Queue *InsertQ(Nodes *node, Queue *Q)
+Queue *InsertQ3(Nodes *node, Queue *Q) //Inserir ordenadamente;
 {
 
     Queue *new_element = NULL, *auxH = NULL, *auxT = NULL;
@@ -182,18 +183,19 @@ Queue *InsertQ(Nodes *node, Queue *Q)
     {
         auxH = Q;
         auxT = auxH->next;
-        if (new_element->cost < Q->cost)
+        if (new_element->cost <= Q->cost) //Menor ou igual!!
         {
             new_element->next = Q;
             Q = new_element;
+        }else{
+            while ((auxT != NULL) && (new_element->cost > auxT->cost))
+            {
+                auxH = auxT;
+                auxT = auxT->next;
+            }
+            new_element->next = auxT;
+            auxH->next = new_element;
         }
-        while ((auxT != NULL) && (new_element->cost > auxT->cost))
-        {
-            auxH = auxT;
-            auxT = auxT->next;
-        }
-        new_element->next = auxT;
-        auxH->next = new_element;
     }
     return Q;
 }
@@ -231,7 +233,7 @@ Queue *RemoveNodeFromQ(Queue *Q){
 }*/
 
 //Relaxação do link uv
-Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3)
+Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3,  Queue **last_Q1, Queue **last_Q2)
 {
 
     Adj *neighbour = NULL;
@@ -266,7 +268,7 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3)
             if ((Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
             { //Acho que faz sentido, mas confirmar
                 //printf(" This Node is going to be relax: Node_id:%d\n", neighbour->id);
-                Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
+                Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3, last_Q1, last_Q2);
             }
             while (neighbour->next != NULL)
             {
@@ -274,7 +276,7 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3)
                 if ((Q->type <= 1 || neighbour->type <= 1) && (neighbour->id != Q->node->destHead->chosen_neighbour_id))
                 {
                     //printf(" This Node is going to be relax: Node_id:%d\n", neighbour->id);
-                    Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3);
+                    Q = RelaxOfLink(Q, neighbour->node_pointer, neighbour->type, Q1, Q2, Q3, last_Q1, last_Q2);
                 }
             }
         }
@@ -282,7 +284,7 @@ Queue *Relaxation(Queue *Q, Queue **Q1, Queue **Q2, Queue **Q3)
     return Q;
 }
 
-Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Queue **Q2, Queue **Q3)
+Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Queue **Q2, Queue **Q3, Queue **last_Q1, Queue **last_Q2)
 {
 
     if (adj_node_type == 1)
@@ -300,7 +302,7 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
         adj_node->destHead->type = adj_node_type;
         adj_node->destHead->cost = Q->cost + 1;
         adj_node->destHead->chosen_neighbour_id = Q->node_id;
-        ChooseQ(Q1, Q2, Q3, adj_node, adj_node->destHead->type);
+        ChooseQ(Q1, Q2, Q3, adj_node, adj_node->destHead->type, last_Q1, last_Q2);
     }
     else if (adj_node_type == adj_node->destHead->type)
     {
@@ -310,31 +312,49 @@ Queue *RelaxOfLink(Queue *Q, Nodes *adj_node, int adj_node_type, Queue **Q1, Que
             adj_node->destHead->type = adj_node_type;
             adj_node->destHead->cost = Q->cost + 1;
             adj_node->destHead->chosen_neighbour_id = Q->node_id;
-            ChooseQ(Q1, Q2, Q3, adj_node, adj_node->destHead->type);
+            ChooseQ(Q1, Q2, Q3, adj_node, adj_node->destHead->type, last_Q1, last_Q2);
         }
     }
 
     return Q;
 }
 
-void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type)
+void ChooseQ(Queue **Q1, Queue **Q2, Queue **Q3, Nodes *node, int type, Queue **last_Q1, Queue **last_Q2)
 {
 
     //printf("Node %d is going to be insert in Queue %d\n",node->id,type);
     if (type == 1)
     {
-        *Q1 = InsertQ(node, *Q1);
+        *Q1 = InsertInLast(node, *Q1, last_Q1);
     }
     else if (type == 2)
-    {
-        *Q2 = InsertQ(node, *Q2);
+    {   
+        *Q2 = InsertInLast(node, *Q2, last_Q2);
     }
     else if (type == 3)
     {
-        *Q3 = InsertQ(node, *Q3);
+        *Q3 = InsertQ3(node, *Q3);
     }
 
     return;
+}
+
+Queue *InsertInLast(Nodes *node, Queue *Q, Queue **last){
+    
+    Queue *old_last=NULL, *new_element = NULL;
+
+    new_element = CreateNewElement(new_element, node);
+
+    if( Q == NULL){
+        Q=new_element;
+        *last=new_element;
+    }else{
+        old_last=*last;
+        old_last->next=new_element;
+        *last=new_element;
+    }
+
+    return Q;
 }
 
 void PrintQ(Queue *Q)
